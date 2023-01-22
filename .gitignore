@@ -1,0 +1,11 @@
+.cache/
+auto-save-list
+eln-cache/
+elpa/
+emojis/
+eshell/
+snippets/
+transient/
+var/
+history
+recentf
