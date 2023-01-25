@@ -11,18 +11,27 @@
 
 (setq inhibit-startup-message t)
 
-      (set-language-environment 'utf-8)
-      (setq locale-coding-system 'utf-8)
+(set-language-environment 'utf-8)
+(setq locale-coding-system 'utf-8)
 
-      (prefer-coding-system 'utf-8)
-      (setq default-file-name-coding-system 'utf-8)
-      (set-default-coding-systems 'utf-8)
-      (set-terminal-coding-system 'utf-8)
+(prefer-coding-system 'utf-8)
+(setq default-file-name-coding-system 'utf-8)
+(set-default-coding-systems 'utf-8)
+(set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
 
 (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
 
 (setq backup-directory-alist `((".*" . "~/emacs_backups")))
+
+(setq org-format-latex-options
+  '(:foreground default
+    :background default
+    :scale 2.5
+    :html-foreground "Black"
+    :html-background "Transparent"
+    :html-scale 1.0
+    :matchers ("begin" "$1" "$" "$$" "\\(" "\\[")))
 
 (dolist (char/ligature-re
          `((?-  . ,(rx (or (or "-->" "-<<" "->>" "-|" "-~" "-<" "->") (+ "-"))))
@@ -76,6 +85,7 @@
 (global-display-line-numbers-mode t)
 (add-to-list 'default-frame-alist
              '(vertical-scroll-bars . nil))
+(global-auto-revert-mode)
 
 (use-package evil
   :ensure t
@@ -254,6 +264,24 @@
   :ensure t
   :config
   (add-hook 'org-mode-hook 'toc-org-mode))
+
+(use-package org-roam
+  :ensure t
+  :custom
+  (org-roam-directory (file-truename "~/Documents/org/roam"))
+  :bind (("C-c n l" . org-roam-buffer-toggle)
+         ("C-c n f" . org-roam-node-find)
+         ("C-c n g" . org-roam-graph)
+         ("C-c n i" . org-roam-node-insert)
+         ("C-c n c" . org-roam-capture)
+         ;; Dailies
+         ("C-c n j" . org-roam-dailies-capture-today))
+  :config
+  ;; If you're using a vertical completion framework, you might want a more informative completion interface
+  (setq org-roam-node-display-template (concat "${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
+  (org-roam-db-autosync-mode)
+  ;; If using org-roam-protocol
+  (require 'org-roam-protocol))
 
 (setq org-startup-folded t)
 (setq org-hidden-keywords '(title))
@@ -442,6 +470,14 @@
 
   "r" '(:which-key "region")
   "r c" '(to-cyrillic :which-key "translate region to cyrillic")
+
+  "o" '(:which-key "org")
+  "o p" '(org-latex-preview :which-key "preview latex fragments")
+  "o r" '(org-mode-restart :which-key "restart org")
+
+  "i" '(:which-key "insert")
+  "i s" '(yas/insert-snippet :which-key "insert snippet")
+  "i n" '(yas/new-snippet :which-key "new snippet")
 
   "e" '(:which-key "eval")
   "e b" '(eval-buffer :which-key "eval buffer")
