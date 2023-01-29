@@ -10,3 +10,6 @@ var/
 history
 recentf
 org-roam.db
+.lsp-session*
+games/
+url/

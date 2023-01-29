@@ -627,13 +627,18 @@
     "h v" '(describe-variable :which-key "describe variable")
     "h f" '(describe-function :which-key "describe function")
     "h k" '(describe-key :which-key "describe key")
+    "h m" '(modus-themes-toggle :which-key "toggle modus theme")
 
     "r" '(:which-key "region")
     "r c" '(to-cyrillic :which-key "translate region to cyrillic")
 
     "o" '(:which-key "org")
     "o p" '(org-latex-preview :which-key "preview latex fragments")
-    "o r" '(org-mode-restart :which-key "restart org")
+    "o R" '(org-mode-restart :which-key "restart org")
+    "o r" '(:which-key "org roam")
+    "o r f" '(org-roam-node-find :which-key "node find")
+    "o r i" '(org-roam-node-insert :which-key "node insert")
+    "o r g" '(org-roam-graph :which-key "nodes graph")
   
     "i" '(:which-key "insert")
     "i s" '(yas/insert-snippet :which-key "insert snippet")
