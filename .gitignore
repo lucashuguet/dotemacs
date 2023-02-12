@@ -13,3 +13,6 @@ org-roam.db
 .lsp-session*
 games/
 url/
+thumbs/
+.org-id-locations
+bookmarks

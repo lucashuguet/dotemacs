@@ -33,6 +33,7 @@
   - [[#xresources-theme][xresources-theme]]
   - [[#yasnippet][yasnippet]]
 - [[#functions][Functions]]
+- [[#latex][Latex]]
 - [[#keys][Keys]]
 - [[#custom][Custom]]
 
@@ -588,6 +589,82 @@
       (shell-command-on-region beg end "xargs -0 -I{} ~/dotfiles/scripts/cyrillic.py {}" t t)
     (message "No region active")))
 #+end_src
+* Latex
+#+begin_src emacs-lisp
+  (unless (boundp 'org-latex-classes)
+    (setq org-latex-classes nil))
+
+  (add-to-list 'org-latex-classes
+               '("ethz"
+                 "\\documentclass[a4paper,11pt,titlepage]{memoir}
+  \\usepackage[utf8]{inputenc}
+  \\usepackage[margin=2cm]{geometry}
+  \\usepackage[T1]{fontenc}
+  \\usepackage{fixltx2e}
+  \\usepackage{graphicx}
+  \\usepackage{longtable}
+  \\usepackage{float}
+  \\usepackage{wrapfig}
+  \\usepackage{rotating}
+  \\usepackage[normalem]{ulem}
+  \\usepackage{amsmath}
+  \\usepackage{textcomp}
+  \\usepackage{marvosym}
+  \\usepackage{wasysym}
+  \\usepackage{amssymb}
+  \\usepackage{hyperref}
+  \\usepackage{mathpazo}
+  \\usepackage{color}
+  \\usepackage{enumerate}
+  \\definecolor{bg}{rgb}{0.95,0.95,0.95}
+  \\tolerance=1000
+        [NO-DEFAULT-PACKAGES]
+        [PACKAGES]
+        [EXTRA]
+  \\linespread{1.1}
+  \\hypersetup{pdfborder=0 0 0}"
+                 ("\\chapter{%s}" . "\\chapter*{%s}")
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+
+
+  (add-to-list 'org-latex-classes
+               '("article"
+                 "\\documentclass[11pt,a4paper]{article}
+  \\usepackage[margin=2cm]{geometry}
+  \\usepackage[utf8]{inputenc}
+  \\usepackage[T1]{fontenc}
+  \\usepackage{fixltx2e}
+  \\usepackage{graphicx}
+  \\usepackage{longtable}
+  \\usepackage{float}
+  \\usepackage{wrapfig}
+  \\usepackage{rotating}
+  \\usepackage[normalem]{ulem}
+  \\usepackage{amsmath}
+  \\usepackage{textcomp}
+  \\usepackage{marvosym}
+  \\usepackage{wasysym}
+  \\usepackage{amssymb}
+  \\usepackage{hyperref}
+  \\usepackage{mathpazo}
+  \\usepackage{color}
+  \\usepackage{enumerate}
+  \\definecolor{bg}{rgb}{0.95,0.95,0.95}
+  \\tolerance=1000
+        [NO-DEFAULT-PACKAGES]
+        [PACKAGES]
+        [EXTRA]
+  \\linespread{1.1}
+  \\hypersetup{pdfborder=0 0 0}"
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")))
+#+end_src
 * Keys
 #+begin_src emacs-lisp
   (nvmap :states '(normal visual motion emacs) :keymaps 'override :prefix "SPC"
@@ -595,6 +672,10 @@
     "f f" '(find-file :which-key "find file")
     "f s" '(save-buffer :which-key "save file")
     "f S" '((lambda () (interactive) (load-file "~/.emacs.d/init.el")) :which-key "source init.el")
+    "f b" '(:which-key "bookmark")
+    "f b b" '(bookmark-jump :which-key "jump to bookmark")
+    "f b s" '(bookmark-set :which-key "set bookmark")
+    "f b d" '(bookmark-delete :which-key "delete bookmark")
 
     "w" '(:which-key "window")
     "w s" '(split-window-below :which-key "split window horizontally")
@@ -635,11 +716,12 @@
     "o" '(:which-key "org")
     "o p" '(org-latex-preview :which-key "preview latex fragments")
     "o R" '(org-mode-restart :which-key "restart org")
+    "o e" '(org-export-dispatch :which-key "org export dispatch")
     "o r" '(:which-key "org roam")
     "o r f" '(org-roam-node-find :which-key "node find")
     "o r i" '(org-roam-node-insert :which-key "node insert")
     "o r g" '(org-roam-graph :which-key "nodes graph")
-  
+
     "i" '(:which-key "insert")
     "i s" '(yas/insert-snippet :which-key "insert snippet")
     "i n" '(yas/new-snippet :which-key "new snippet")
