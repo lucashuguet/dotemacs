@@ -73,6 +73,8 @@
 (set-face-attribute 'default t :font "FantasqueSansMono Nerd Font Mono" :height 130)
 (setq default-frame-alist '((font . "FantasqueSansMono Nerd Font Mono-13")))
 
+(set-cursor-color "#ffffff")
+
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 
