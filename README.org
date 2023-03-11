@@ -157,12 +157,12 @@
 *** extention
 **** evil-collection
 #+begin_src emacs-lisp
-(use-package evil-collection
-  :ensure t
-  :after evil
-  :config
-  (setq evil-collection-mode-list '(dashboard dired ibuffer))
-  (evil-collection-init))
+  (use-package evil-collection
+    :ensure t
+    :after evil
+    ;; :config
+    ;; (setq evil-collection-mode-list '(dashboard dired ibuffer magit))
+    (evil-collection-init))
 #+end_src
 **** evil-commentary
 #+begin_src emacs-lisp

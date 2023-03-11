@@ -99,8 +99,8 @@
 (use-package evil-collection
   :ensure t
   :after evil
-  :config
-  (setq evil-collection-mode-list '(dashboard dired ibuffer))
+  ;; :config
+  ;; (setq evil-collection-mode-list '(dashboard dired ibuffer magit))
   (evil-collection-init))
 
 (use-package evil-commentary
