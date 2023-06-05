@@ -6,7 +6,7 @@
  '(custom-safe-themes
    '("158f4e123878f1de2b5866ce8e1139a837dca8d4751a5a1c0b1f2bb1a06df05f" default))
  '(package-selected-packages
-   '(unicode-fonts spaceline powerline toc-org evil-org dune utop flycheck-ocaml merlin-eldoc merlin tuareg rust-mode emojify diredfl evil-vimish-fold vimish-fold evil-commentary emms-state emms org-roam org-superstar peep-dired xresources-theme dashboard org-auto-tangle lsp-mode treemacs-evil treemacs-all-the-icons evil-anzu composite undo-tree all-the-icons-dired format-all yasnippet-snippets file-templates yasnippet yas-snippet all-the-icons general vertico which-key magit evil-collection evil company use-package))
+   '(isearch-mb arduino-mode kotlin-mode javap-mode gradle-mode rainbow-mode evil-numbers unicode-fonts spaceline powerline toc-org evil-org dune utop flycheck-ocaml merlin-eldoc merlin tuareg rust-mode emojify diredfl evil-vimish-fold vimish-fold evil-commentary emms-state emms org-roam org-superstar peep-dired xresources-theme dashboard org-auto-tangle lsp-mode treemacs-evil treemacs-all-the-icons evil-anzu composite undo-tree all-the-icons-dired format-all yasnippet-snippets file-templates yasnippet yas-snippet all-the-icons general vertico which-key magit evil-collection evil company use-package))
  '(warning-suppress-types '((comp) (comp))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

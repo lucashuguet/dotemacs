@@ -121,8 +121,11 @@
 #+begin_src emacs-lisp
   (load-theme 'modus-vivendi t)
 
+  (set-face-attribute 'cursor nil :background "#ffffff")
   (set-face-attribute 'default t :font "FantasqueSansMono Nerd Font Mono" :height 130)
+
   (setq default-frame-alist '((font . "FantasqueSansMono Nerd Font Mono-13")))
+  (setq default-frame-alist '((cursor-color . "#ffffff")))
 
   (set-cursor-color "#ffffff")
 #+end_src
@@ -130,6 +133,7 @@
 #+begin_src emacs-lisp
   (tool-bar-mode -1)
   (menu-bar-mode -1)
+  (electric-pair-mode t)
 
   (scroll-bar-mode -1)
   (customize-set-variable 'scroll-bar-mode nil)
@@ -142,19 +146,19 @@
                '(vertical-scroll-bars . nil))
   (global-auto-revert-mode)
 #+end_src
-
 * Packages
 ** evil
 *** config
 #+begin_src emacs-lisp
-(use-package evil
-  :ensure t
-  :init
-  (setq evil-want-integration t)
-  (setq evil-want-keybinding nil)
-  (setq evil-vsplit-window-right t)
-  (setq evil-split-window-below t)
-  (evil-mode t))
+  (use-package evil
+    :ensure t
+    :init
+    (setq evil-want-integration t)
+    (setq evil-want-keybinding nil)
+    (setq evil-vsplit-window-right t)
+    (setq evil-split-window-below t)
+    (setq evil-default-cursor t)
+    (evil-mode t))
 #+end_src
 *** extention
 **** evil-collection
@@ -162,8 +166,8 @@
   (use-package evil-collection
     :ensure t
     :after evil
-    ;; :config
-    ;; (setq evil-collection-mode-list '(dashboard dired ibuffer magit))
+    :config
+    (setq evil-collection-mode-list '(dashboard dired ibuffer magit))
     (evil-collection-init))
 #+end_src
 **** evil-commentary

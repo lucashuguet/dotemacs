@@ -70,13 +70,17 @@
 
 (load-theme 'modus-vivendi t)
 
+(set-face-attribute 'cursor nil :background "#ffffff")
 (set-face-attribute 'default t :font "FantasqueSansMono Nerd Font Mono" :height 130)
+
 (setq default-frame-alist '((font . "FantasqueSansMono Nerd Font Mono-13")))
+(setq default-frame-alist '((cursor-color . "#ffffff")))
 
 (set-cursor-color "#ffffff")
 
 (tool-bar-mode -1)
 (menu-bar-mode -1)
+(electric-pair-mode t)
 
 (scroll-bar-mode -1)
 (customize-set-variable 'scroll-bar-mode nil)
@@ -96,13 +100,14 @@
   (setq evil-want-keybinding nil)
   (setq evil-vsplit-window-right t)
   (setq evil-split-window-below t)
+  (setq evil-default-cursor t)
   (evil-mode t))
 
 (use-package evil-collection
   :ensure t
   :after evil
-  ;; :config
-  ;; (setq evil-collection-mode-list '(dashboard dired ibuffer magit))
+  :config
+  (setq evil-collection-mode-list '(dashboard dired ibuffer magit))
   (evil-collection-init))
 
 (use-package evil-commentary
