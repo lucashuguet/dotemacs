@@ -33,6 +33,8 @@
     :html-scale 1.0
     :matchers ("begin" "$1" "$" "$$" "\\(" "\\[")))
 
+(run-at-time (current-time) 300 'recentf-save-list)
+
 (dolist (char/ligature-re
          `((?-  . ,(rx (or (or "-->" "-<<" "->>" "-|" "-~" "-<" "->") (+ "-"))))
            (?/  . ,(rx (or (or "/==" "/=" "/>" "/**" "/*") (+ "/"))))
