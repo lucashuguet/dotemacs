@@ -433,6 +433,16 @@
   :config
   (yas-global-mode 1))
 
+(use-package ellama
+  :ensure t
+  :after llm
+  :init
+  (setopt ellama-language "English")
+  (require 'llm-ollama)
+  (setopt ellama-provider
+  (make-llm-ollama
+    :chat-model "llama2" :embedding-model "llama2")))
+
 (defun to-cyrillic (beg end)
   (interactive "*r")
   (if (region-active-p)

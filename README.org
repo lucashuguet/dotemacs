@@ -32,6 +32,7 @@
   - [[#which-key][which-key]]
   - [[#xresources-theme][xresources-theme]]
   - [[#yasnippet][yasnippet]]
+  - [[#ellama][ellama]]
 - [[#functions][Functions]]
 - [[#latex][Latex]]
 - [[#keys][Keys]]
@@ -588,6 +589,18 @@
   :ensure t
   :config
   (yas-global-mode 1))
+#+end_src
+** ellama
+#+begin_src elisp
+  (use-package ellama
+    :ensure t
+    :after llm
+    :init
+    (setopt ellama-language "English")
+    (require 'llm-ollama)
+    (setopt ellama-provider
+    (make-llm-ollama
+      :chat-model "llama2" :embedding-model "llama2")))
 #+end_src
 * Functions
 #+begin_src emacs-lisp
