@@ -1,0 +1,23 @@
+;;;; Emacs Bookmark Format Version 1;;;; -*- coding: utf-8-emacs; mode: lisp-data -*-
+;;; This format is meant to be slightly human-readable;
+;;; nevertheless, you probably don't want to edit it.
+;;; -*- End Of Bookmark File Format Version Stamp -*-
+(("home.nix"
+ (filename . "~/nixos/home.nix")
+ (front-context-string . "{ config, pkgs, ")
+ (rear-context-string)
+ (position . 1)
+ (last-modified 26288 15153 495971 897000))
+("configuration.nix"
+ (filename . "~/nixos/configuration.nix")
+ (front-context-string . "{ pkgs, lib, con")
+ (rear-context-string)
+ (position . 1)
+ (last-modified 26288 15140 134137 387000))
+("emacs"
+ (filename . "~/.emacs.d/README.org")
+ (front-context-string . "* Variables\n#+be")
+ (rear-context-string . "y t)\n#+end_src\n\n")
+ (position . 1218)
+ (last-modified 26288 15087 629968 437000))
+)

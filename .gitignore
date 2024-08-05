@@ -2,7 +2,6 @@
 .lsp-session*
 .org-id-locations
 auto-save-list
-bookmarks
 eln-cache/
 elpa/
 emojis/
@@ -17,3 +16,4 @@ thumbs/
 transient/
 url/
 var/
+tree-sitter/

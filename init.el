@@ -1,6 +1,6 @@
 (require 'package)
 (add-to-list 'package-archives
-	     '("melpa" . "https://melpa.org/packages/") t)
+             '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
 
 (unless (package-installed-p 'use-package)
@@ -24,16 +24,9 @@
 
 (setq backup-directory-alist `((".*" . "~/emacs_backups")))
 
-(setq org-format-latex-options
-  '(:foreground default
-    :background default
-    :scale 2.5
-    :html-foreground "Black"
-    :html-background "Transparent"
-    :html-scale 1.0
-    :matchers ("begin" "$1" "$" "$$" "\\(" "\\[")))
-
 (run-at-time (current-time) 300 'recentf-save-list)
+
+(add-to-list 'default-frame-alist '(font . "FantasqueSansM Nerd Font-16"))
 
 (dolist (char/ligature-re
          `((?-  . ,(rx (or (or "-->" "-<<" "->>" "-|" "-~" "-<" "->") (+ "-"))))
@@ -70,19 +63,10 @@
     (set-char-table-range composition-function-table char
                           `([,ligature-re 0 font-shape-gstring]))))
 
-(load-theme 'modus-vivendi t)
-
-(set-face-attribute 'cursor nil :background "#ffffff")
-(set-face-attribute 'default t :font "FantasqueSansM Nerd Font" :height 130)
-
-(setq default-frame-alist '((font . "FantasqueSansM Nerd Font-13")))
-(setq default-frame-alist '((cursor-color . "#ffffff")))
-
-(set-cursor-color "#ffffff")
-
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (electric-pair-mode t)
+(electric-indent-mode t)
 
 (scroll-bar-mode -1)
 (customize-set-variable 'scroll-bar-mode nil)
@@ -92,7 +76,7 @@
 (line-number-mode t)
 (global-display-line-numbers-mode t)
 (add-to-list 'default-frame-alist
-             '(vertical-scroll-bars . nil))
+	     '(vertical-scroll-bars . nil))
 (global-auto-revert-mode)
 
 (use-package evil
@@ -136,18 +120,10 @@
   :config
   (general-evil-setup t))
 
-(use-package all-the-icons
-  :ensure t)
-
-(use-package company
+(use-package nerd-icons
   :ensure t
-  :bind (:map company-active-map
-	      ("<tab>" . company-complete-common-or-cycle))
-  :config
-  (setq company-idle-delay 0.0)
-  (setq company-backends '((company-capf company-dabbrev-code)))
-  (setq company-tooltip-flip-when-above t)
-  :hook (prog-mode . global-company-mode))
+  :custom
+  (nerd-icons-font-family "FantasqueSansM Nerd Font"))
 
 (use-package dashboard
   :ensure t
@@ -162,10 +138,14 @@
   (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
   (dashboard-setup-startup-hook))
 
-(use-package all-the-icons-dired
+(require 'dired)
+
+(with-eval-after-load 'dired
+  (setq dired-listing-switches "-Dhlv --group-directories-first"))
+
+(use-package nerd-icons-dired
   :ensure t
-  :after all-the-icons
-  :hook (dired-mode . all-the-icons-dired-mode))
+  :hook (dired-mode . nerd-icons-dired-mode))
 
 (use-package diredfl
   :ensure t
@@ -176,42 +156,11 @@
   :ensure t
   :config
   (with-eval-after-load 'dired
-  ;;(define-key dired-mode-map (kbd "M-p") 'peep-dired)
-  (evil-define-key 'normal dired-mode-map (kbd "h") 'dired-up-directory)
-  (evil-define-key 'normal dired-mode-map (kbd "l") 'dired-open-file) ; use dired-find-file instead if not using dired-open package
-  (evil-define-key 'normal peep-dired-mode-map (kbd "j") 'peep-dired-next-file)
-  (evil-define-key 'normal peep-dired-mode-map (kbd "k") 'peep-dired-prev-file)))
-
-(require 'dired)
-
-(with-eval-after-load 'dired
-  (setq dired-listing-switches "-aDhlv --group-directories-first"))
-
-;; (use-package emacs
-;;   :init
-;;   (defun crm-indicator (args)
-;;     (cons (format "[CRM%s] %s"
-;;                   (replace-regexp-in-string
-;;                    "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
-;;                    crm-separator)
-;;                   (car args))
-;;           (cdr args)))
-;;   (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
-
-;;   (setq minibuffer-prompt-properties
-;;         '(read-only t cursor-intangible t face minibuffer-prompt))
-;;   (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
-
-;;   (setq enable-recursive-minibuffers t))
-
-(use-package emojify
-  :ensure t
-  :hook (after-init . global-emojify-mode))
-
-(use-package format-all
-  :ensure t
-  :config
-  (format-all-mode 1))
+    ;;(define-key dired-mode-map (kbd "M-p") 'peep-dired)
+    (evil-define-key 'normal dired-mode-map (kbd "h") 'dired-up-directory)
+    (evil-define-key 'normal dired-mode-map (kbd "l") 'dired-find-alternate-file)
+    (evil-define-key 'normal peep-dired-mode-map (kbd "j") 'peep-dired-next-file)
+    (evil-define-key 'normal peep-dired-mode-map (kbd "k") 'peep-dired-prev-file)))
 
 (use-package lsp-mode
   :ensure t)
@@ -219,38 +168,114 @@
 (use-package rust-mode
   :ensure t)
 
+(use-package corfu
+  :ensure t
+  :init
+  (global-corfu-mode)
+  :custom
+  (corfu-auto t)
+  :bind
+  (:map corfu-map
+        ("TAB" . corfu-next)
+        ([tab] . corfu-next)
+        ("S-TAB" . corfu-previous)
+        ([backtab] . corfu-previous)))
+
+(use-package emacs
+  :custom
+  (tab-always-indent 'complete)
+  (text-mode-ispell-word-completion nil)
+  (read-extended-command-predicate #'command-completion-default-include-p))
+
 (use-package magit
-  :ensure t
-  :bind ("C-x g" . magit-status))
-
-(use-package tuareg
-  :ensure t
-  :mode (("\\.ocamlinit\\'" . tuareg-mode)))
-
-(use-package merlin
-  :ensure t
-  :config
-  (add-hook 'tuareg-mode-hook #'merlin-mode)
-  (add-hook 'merlin-mode-hook #'company-mode)
-  ;; we're using flycheck instead
-  (setq merlin-error-after-save nil))
-
-(use-package merlin-eldoc
-  :ensure t
-  :hook ((tuareg-mode) . merlin-eldoc-setup))
-
-(use-package flycheck-ocaml
-  :ensure t
-  :config
-  (flycheck-ocaml-setup))
-
-(use-package utop
-  :ensure t
-  :config
-  (add-hook 'tuareg-mode-hook #'utop-minor-mode))
-
-(use-package dune
   :ensure t)
+
+(setq org-startup-folded t)
+(setq org-hidden-keywords '(title))
+(setq org-return-follows-link t)
+
+(setq org-todo-keywords
+      (quote ((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
+	      (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)"))))
+
+(setq-default org-enforce-todo-dependencies t)
+
+(setq org-todo-keyword-faces
+      (quote (("TODO" :foreground "indian red" :weight bold)
+	      ("NEXT" :foreground "light blue" :weight bold)
+	      ("DONE" :foreground "light green" :weight bold)
+	      ("WAITING" :foreground "chocolate" :weight bold)
+	      ("CANCELLED" :foreground "dim gray" :weight bold))))
+
+(setq-default org-export-with-todo-keywords nil)
+
+(with-eval-after-load 'org-superstar
+  (setq org-superstar-item-bullet-alist
+	'((?* . ?•)
+	  (?+ . ?➤)
+	  (?- . ?•)))
+
+  (setq org-superstar-leading-bullet ?\s)
+  (setq org-superstar-headline-bullets-list
+	'("◉" "◈" "○" "▷"))
+  (org-superstar-restart))
+
+
+(setq org-hide-leading-stars nil)
+(setq org-indent-mode-turns-on-hiding-stars nil)
+
+(setq org-ellipsis " ▼ ")
+
+(setq org-hide-emphasis-markers t)
+
+(defun my/buffer-face-mode-variable ()
+  "Set font to a variable width (proportional) fonts in current buffer"
+  (interactive)
+  (setq buffer-face-mode-face '(:family "FantasqueSansM Nerd Font"
+					:height 160
+					:width normal))
+  (buffer-face-mode))
+
+(defun my/set-faces-org ()
+  (setq org-hidden-keywords '(title))
+  (set-face-attribute 'org-level-8 nil :weight 'bold :inherit 'default)
+
+  (set-face-attribute 'org-level-7 nil :inherit 'org-level-8)
+  (set-face-attribute 'org-level-6 nil :inherit 'org-level-8)
+  (set-face-attribute 'org-level-5 nil :inherit 'org-level-8)
+  (set-face-attribute 'org-level-4 nil :inherit 'org-level-8)
+
+  (set-face-attribute 'org-level-3 nil :inherit 'org-level-8 :height 1.2) ;\large
+  (set-face-attribute 'org-level-2 nil :inherit 'org-level-8 :height 1.44) ;\Large
+  (set-face-attribute 'org-level-1 nil :inherit 'org-level-8 :height 1.728) ;\LARGE
+
+  (setq org-cycle-level-faces nil)
+  (setq org-n-level-faces 4)
+
+  (set-face-attribute 'org-document-title nil
+		      :height 2.074
+		      :foreground 'unspecified
+		      :inherit 'org-level-8))
+
+(defun my/set-keyword-faces-org ()
+  (mapc (lambda (pair) (push pair prettify-symbols-alist))
+	'(;; Syntax
+	  ("TODO" .     "")
+	  ("DONE" .     "")
+	  ("WAITING" .  "")
+	  ("HOLD" .     "")
+	  ("NEXT" .     "")
+	  ("CANCELLED" . "")
+	  ("#+begin_quote" . "“")
+	  ("#+end_quote" . "”")))
+  )
+
+(defun my/style-org ()
+  (my/set-faces-org)
+  (my/set-keyword-faces-org))
+
+(add-hook 'org-mode-hook 'my/style-org)
+(add-hook 'org-mode-hook 'org-indent-mode)
 
 (use-package org-auto-tangle
   :ensure t
@@ -292,114 +317,13 @@
   ;; If using org-roam-protocol
   (require 'org-roam-protocol))
 
-(setq org-startup-folded t)
-(setq org-hidden-keywords '(title))
-(setq org-return-follows-link t)
-
-(setq org-todo-keywords
-    (quote ((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
-            (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)"))))
-
-(setq-default org-enforce-todo-dependencies t)
-
-(setq org-todo-keyword-faces
-    (quote (("TODO" :foreground "indian red" :weight bold)
-            ("NEXT" :foreground "light blue" :weight bold)
-            ("DONE" :foreground "light green" :weight bold)
-            ("WAITING" :foreground "chocolate" :weight bold)
-            ("CANCELLED" :foreground "dim gray" :weight bold))))
-
-(setq-default org-export-with-todo-keywords nil)
-
-(with-eval-after-load 'org-superstar
-  (setq org-superstar-item-bullet-alist
-        '((?* . ?•)
-          (?+ . ?➤)
-          (?- . ?•)))
-
-  (setq org-superstar-leading-bullet ?\s)
-  (setq org-superstar-headline-bullets-list
-      '("◉" "◈" "○" "▷"))
-  (org-superstar-restart))
-
-
-(setq org-hide-leading-stars nil)
-(setq org-indent-mode-turns-on-hiding-stars nil)
-
-(setq org-ellipsis " ▼ ")
-
-(setq org-hide-emphasis-markers t)
-
-(defun my/buffer-face-mode-variable ()
-  "Set font to a variable width (proportional) fonts in current buffer"
-  (interactive)
-  (setq buffer-face-mode-face '(:family "FantasqueSansMono Nerd Font Mono"
-                                :height 130
-                                :width normal))
-  (buffer-face-mode))
-
-(defun my/set-faces-org ()
-  (setq org-hidden-keywords '(title))
-  (set-face-attribute 'org-level-8 nil :weight 'bold :inherit 'default)
-
-  (set-face-attribute 'org-level-7 nil :inherit 'org-level-8)
-  (set-face-attribute 'org-level-6 nil :inherit 'org-level-8)
-  (set-face-attribute 'org-level-5 nil :inherit 'org-level-8)
-  (set-face-attribute 'org-level-4 nil :inherit 'org-level-8)
-
-  (set-face-attribute 'org-level-3 nil :inherit 'org-level-8 :height 1.2) ;\large
-  (set-face-attribute 'org-level-2 nil :inherit 'org-level-8 :height 1.44) ;\Large
-  (set-face-attribute 'org-level-1 nil :inherit 'org-level-8 :height 1.728) ;\LARGE
-
-  (setq org-cycle-level-faces nil)
-  (setq org-n-level-faces 4)
-
-  (set-face-attribute 'org-document-title nil
-                    :height 2.074
-                    :foreground 'unspecified
-                    :inherit 'org-level-8))
-
-(defun my/set-keyword-faces-org ()
-  (mapc (lambda (pair) (push pair prettify-symbols-alist))
-        '(;; Syntax
-          ("TODO" .     "")
-          ("DONE" .     "")
-          ("WAITING" .  "")
-          ("HOLD" .     "")
-          ("NEXT" .     "")
-          ("CANCELLED" . "")
-          ("#+begin_quote" . "“")
-          ("#+end_quote" . "”")))
-  )
-
-(defun my/style-org ()
-  (my/set-faces-org)
-  (my/set-keyword-faces-org))
-
-(add-hook 'org-mode-hook 'my/style-org)
-(add-hook 'org-mode-hook 'org-indent-mode)
-
-(use-package powerline
-  :ensure t)
-
-(use-package spaceline
-  :ensure t
-  :after powerline
-  :config
-  (setq powerline-default-separator 'bar)
-  (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state)
-  (setq-default
-   mode-line-format '("%e" (:eval (spaceline-ml-main))))
-  (spaceline-emacs-theme)
-  (spaceline-toggle-anzu-off)
-  (spaceline-toggle-minor-modes-off))
-
 (use-package treemacs
   :ensure t)
 
-(use-package treemacs-all-the-icons
+(use-package treemacs-nerd-icons
   :ensure t
-  :after treemacs)
+  :config
+  (treemacs-load-theme "nerd-icons"))
 
 (use-package treemacs-evil
   :ensure t
@@ -421,17 +345,14 @@
   :config
   (which-key-mode t))
 
-;; (use-package xresources-theme
-;;   :ensure t)
-
-(use-package yasnippet-snippets
-  :ensure t
-  :after yasnippet)
-
 (use-package yasnippet
   :ensure t
   :config
   (yas-global-mode 1))
+
+(use-package yasnippet-snippets
+  :ensure t
+  :after yasnippet)
 
 (use-package ellama
   :ensure t
@@ -440,88 +361,35 @@
   (setopt ellama-language "English")
   (require 'llm-ollama)
   (setopt ellama-provider
-  (make-llm-ollama
-    :chat-model "deepseek-coder:6.7b-instruct" :embedding-model "deepseek-coder:6.7b-instruct")))
+          (make-llm-ollama
+           :chat-model "deepseek-coder:6.7b-instruct" :embedding-model "deepseek-coder:6.7b-instruct")))
 
-(defun to-cyrillic (beg end)
-  (interactive "*r")
-  (if (region-active-p)
-      (shell-command-on-region beg end "xargs -0 -I{} ~/dotfiles/scripts/cyrillic.py {}" t t)
-    (message "No region active")))
+(use-package doom-themes
+  :ensure t
+  :config
+  (load-theme 'doom-ayu-dark t)
+  (doom-themes-org-config))
 
-(unless (boundp 'org-latex-classes)
-  (setq org-latex-classes nil))
+(use-package doom-modeline
+  :ensure t
+  :hook (after-init . doom-modeline-mode)
+  :config
+  (setq doom-modeline-height 25))
 
-(add-to-list 'org-latex-classes
-             '("ethz"
-               "\\documentclass[a4paper,11pt,titlepage]{memoir}
-\\usepackage[utf8]{inputenc}
-\\usepackage[margin=2cm]{geometry}
-\\usepackage[T1]{fontenc}
-\\usepackage{fixltx2e}
-\\usepackage{graphicx}
-\\usepackage{longtable}
-\\usepackage{float}
-\\usepackage{wrapfig}
-\\usepackage{rotating}
-\\usepackage[normalem]{ulem}
-\\usepackage{amsmath}
-\\usepackage{textcomp}
-\\usepackage{marvosym}
-\\usepackage{wasysym}
-\\usepackage{amssymb}
-\\usepackage{hyperref}
-\\usepackage{mathpazo}
-\\usepackage{color}
-\\usepackage{enumerate}
-\\definecolor{bg}{rgb}{0.95,0.95,0.95}
-\\tolerance=1000
-      [NO-DEFAULT-PACKAGES]
-      [PACKAGES]
-      [EXTRA]
-\\linespread{1.1}
-\\hypersetup{pdfborder=0 0 0}"
-               ("\\chapter{%s}" . "\\chapter*{%s}")
-               ("\\section{%s}" . "\\section*{%s}")
-               ("\\subsection{%s}" . "\\subsection*{%s}")
-               ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-               ("\\paragraph{%s}" . "\\paragraph*{%s}")
-               ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+(use-package nix-mode
+  :ensure t
+  :mode "\\.nix\\'")
 
+(use-package treesit
+  :ensure nil
+  :when (treesit-available-p)
+  :init
+  (setq treesit-font-lock-level 3)
+  (setq major-mode-remap-alist
+        '((python-mode . python-ts-mode))))
 
-(add-to-list 'org-latex-classes
-             '("article"
-               "\\documentclass[11pt,a4paper]{article}
-\\usepackage[margin=2cm]{geometry}
-\\usepackage[utf8]{inputenc}
-\\usepackage[T1]{fontenc}
-\\usepackage{fixltx2e}
-\\usepackage{graphicx}
-\\usepackage{longtable}
-\\usepackage{float}
-\\usepackage{wrapfig}
-\\usepackage{rotating}
-\\usepackage[normalem]{ulem}
-\\usepackage{amsmath}
-\\usepackage{textcomp}
-\\usepackage{marvosym}
-\\usepackage{wasysym}
-\\usepackage{amssymb}
-\\usepackage{hyperref}
-\\usepackage{mathpazo}
-\\usepackage{color}
-\\usepackage{enumerate}
-\\definecolor{bg}{rgb}{0.95,0.95,0.95}
-\\tolerance=1000
-      [NO-DEFAULT-PACKAGES]
-      [PACKAGES]
-      [EXTRA]
-\\linespread{1.1}
-\\hypersetup{pdfborder=0 0 0}"
-               ("\\section{%s}" . "\\section*{%s}")
-               ("\\subsection{%s}" . "\\subsection*{%s}")
-               ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-               ("\\paragraph{%s}" . "\\paragraph*{%s}")))
+(use-package dockerfile-mode
+  :ensure t)
 
 (nvmap :states '(normal visual motion emacs) :keymaps 'override :prefix "SPC"
   "f" '(:which-key "file")
