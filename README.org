@@ -452,7 +452,7 @@
     (require 'llm-ollama)
     (setopt ellama-provider
             (make-llm-ollama
-             :chat-model "deepseek-coder:6.7b-instruct" :embedding-model "deepseek-coder:6.7b-instruct")))
+             :chat-model "deepseek-coder-v2:16b-lite-base-q4_0" :embedding-model "deepseek-coder-v2:16b-lite-instruct-q4_0")))
 #+end_src
 ** doom
 #+begin_src emacs-lisp
