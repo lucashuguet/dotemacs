@@ -73,9 +73,9 @@
 (load-theme 'modus-vivendi t)
 
 (set-face-attribute 'cursor nil :background "#ffffff")
-(set-face-attribute 'default t :font "FantasqueSansMono Nerd Font Mono" :height 130)
+(set-face-attribute 'default t :font "FantasqueSansM Nerd Font" :height 130)
 
-(setq default-frame-alist '((font . "FantasqueSansMono Nerd Font Mono-13")))
+(setq default-frame-alist '((font . "FantasqueSansM Nerd Font-13")))
 (setq default-frame-alist '((cursor-color . "#ffffff")))
 
 (set-cursor-color "#ffffff")
@@ -441,7 +441,7 @@
   (require 'llm-ollama)
   (setopt ellama-provider
   (make-llm-ollama
-    :chat-model "llama2" :embedding-model "llama2")))
+    :chat-model "deepseek-coder:6.7b-instruct" :embedding-model "deepseek-coder:6.7b-instruct")))
 
 (defun to-cyrillic (beg end)
   (interactive "*r")
