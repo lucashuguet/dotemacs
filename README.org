@@ -1,44 +1,50 @@
-#+title:Org Configuration
+#+title: Emacs configuration
 #+author: @lucashuguet
 #+property: header-args :tangle init.el
 #+auto_tangle: t
 
-* Table of Contents :TOC:
-- [[#packages-management][Packages Management]]
-  - [[#melpa][MELPA]]
+* Contents :TOC:
+- [[#pkg-management][Pkg Management]]
+  - [[#melpa][melpa]]
   - [[#use-package][use-package]]
-- [[#variables][Variables]]
-- [[#ligatures][Ligatures]]
-- [[#minor-modes][Minor modes]]
-- [[#packages][Packages]]
+- [[#keymaps][Keymaps]]
   - [[#evil][evil]]
   - [[#general][general]]
-  - [[#nerd-icons][nerd-icons]]
+  - [[#keys][keys]]
+- [[#appearance][Appearance]]
+  - [[#basic-configuration][basic configuration]]
+  - [[#fonts][fonts]]
+  - [[#ligatures][ligatures]]
+  - [[#theme][theme]]
+  - [[#modeline][modeline]]
   - [[#dashboard][dashboard]]
-  - [[#dired][dired]]
-  - [[#lsp-mode][lsp-mode]]
-  - [[#emacs][emacs]]
-  - [[#magit][magit]]
-  - [[#org-mode][org-mode]]
-  - [[#treemacs][treemacs]]
-  - [[#unicode-fonts][unicode-fonts]]
   - [[#vertico][vertico]]
   - [[#which-key][which-key]]
+- [[#emacs-builtins][Emacs builtins]]
+  - [[#custom-file][custom-file]]
+  - [[#backups][backups]]
+  - [[#dired][dired]]
+  - [[#recentf][recentf]]
+  - [[#warnings][warnings]]
+  - [[#utf8][utf8]]
+- [[#org-mode][Org mode]]
+  - [[#babel][babel]]
+  - [[#extentions][extentions]]
+- [[#code][Code]]
+  - [[#minor-modes][minor modes]]
+  - [[#eglot][eglot]]
+  - [[#corfu][corfu]]
+  - [[#magit][magit]]
   - [[#yasnippet][yasnippet]]
-  - [[#ellama][ellama]]
-  - [[#doom][doom]]
-  - [[#nix-mode][nix-mode]]
-  - [[#treesit][treesit]]
+  - [[#treemacs][treemacs]]
+  - [[#rust][rust]]
+  - [[#python][python]]
+  - [[#web][web]]
   - [[#docker][docker]]
-  - [[#company][company]]
-  - [[#web-mode][web-mode]]
-  - [[#flycheck][flycheck]]
-  - [[#tide][tide]]
-- [[#keys][Keys]]
-- [[#custom][Custom]]
+  - [[#nix][nix]]
 
-* Packages Management
-** MELPA
+* Pkg Management
+** melpa
 #+begin_src emacs-lisp
   (require 'package)
   (add-to-list 'package-archives
@@ -53,29 +59,161 @@
 
   (setq use-package-expand-minimally t)
 #+end_src
+* Keymaps
+** evil
+Vim motions emulator in emacs
+#+begin_src emacs-lisp
+  (use-package evil
+    :ensure t
+    :init
+    (setq evil-want-integration t)
+    (setq evil-want-keybinding nil)
+    (setq evil-vsplit-window-right t)
+    (setq evil-split-window-below t)
+    (setq evil-default-cursor t)
+    (setq evil-want-c-i-jump nil) ;; fixes indent in org mode
+    (evil-mode t))
 
-* Variables
+  (use-package evil-collection
+    :ensure t
+    :after evil
+    :config
+    (setq evil-collection-mode-list '(dashboard dired ibuffer magit))
+    (evil-collection-init))
+
+  (use-package evil-commentary
+    :ensure t
+    :after evil
+    :init (evil-commentary-mode))
+
+  (use-package vimish-fold
+    :ensure t
+    :after evil)
+
+  (use-package evil-vimish-fold
+    :ensure t
+    :after vimish-fold
+    :hook ((prog-mode conf-mode text-mode) . evil-vimish-fold-mode))
+
+  (use-package evil-anzu
+    :ensure t
+    :config
+    (global-anzu-mode))
+#+end_src
+** general
+#+begin_src emacs-lisp
+  (use-package general
+    :ensure t
+    :config
+    (general-evil-setup t))
+#+end_src
+** keys
+#+begin_src emacs-lisp
+  (nvmap :states '(normal visual motion emacs) :keymaps 'override :prefix "SPC"
+    "f" '(:which-key "file")
+    "f f" '(find-file :which-key "find file")
+    "f s" '(save-buffer :which-key "save file")
+    "f S" '((lambda () (interactive) (load-file "~/.emacs.d/init.el")) :which-key "source init.el")
+    "f b" '(:which-key "bookmark")
+    "f b b" '(bookmark-jump :which-key "jump to bookmark")
+    "f b s" '(bookmark-set :which-key "set bookmark")
+    "f b d" '(bookmark-delete :which-key "delete bookmark")
+
+    "w" '(:which-key "window")
+    "w s" '(split-window-below :which-key "split window horizontally")
+    "w v" '(split-window-right :which-key "split window vertically")
+    "w c" '(delete-window :which-key "close window")
+    "w w" '(next-window-any-frame :which-key "switch window")
+
+    "b" '(:which-key "buffer")
+    "b d" '(kill-current-buffer :which-key "kill buffer")
+    "b n" '(next-buffer :which-key "next buffer")
+    "b p" '(previous-buffer :which-key "previous buffer")
+    "b i" '(ibuffer :which-key "ibuffer")
+
+    "q" '(:which-key "quit")
+    "q q" '(save-buffers-kill-terminal :which-key "quit emacs")
+    "q f" '(delete-frame :which-key "quit emacsclient")
+
+    "d" '(:which-key "dired")
+    "d d" '(dired :which-key "open dired")
+    "d j" '(dired-jump :which-key "dired jump")
+    "d p" '(peep-dired :which-key "peep dired")
+
+    "a" '(:which-key "apps")
+    "a t" '(treemacs :which-key "open treemacs")
+    "a g" '(magit-status-here :which-key "magit")
+    "a i" '(ibuffer :which-key "ibuffer")
+
+    "h" '(:which-key "help")
+    "h t" '(load-theme :which-key "load theme")
+    "h v" '(describe-variable :which-key "describe variable")
+    "h f" '(describe-function :which-key "describe function")
+    "h k" '(describe-key :which-key "describe key")
+    "h m" '(describe-mode :which-key "describe mode")
+
+    "r" '(:which-key "region")
+    "r c" '(to-cyrillic :which-key "translate region to cyrillic")
+
+    "o" '(:which-key "org")
+    "o p" '(org-latex-preview :which-key "preview latex fragments")
+    "o R" '(org-mode-restart :which-key "restart org")
+    "o e" '(org-export-dispatch :which-key "org export dispatch")
+    "o E" '(org-edit-special :which-key "org edit special")
+    "o r" '(:which-key "org roam")
+    "o r f" '(org-roam-node-find :which-key "node find")
+    "o r i" '(org-roam-node-insert :which-key "node insert")
+    "o r g" '(org-roam-graph :which-key "nodes graph")
+
+    "i" '(:which-key "insert")
+    "i s" '(yas/insert-snippet :which-key "insert snippet")
+    "i n" '(yas/new-snippet :which-key "new snippet")
+
+    "e" '(:which-key "eval")
+    "e b" '(eval-buffer :which-key "eval buffer")
+    "e r" '(eval-region :which-key "eval region")
+    "e e" '(eval-expression :which-key "eval expression")
+    "e l" '(eval-last-sexp :which-key "eval last expression"))
+
+  (nvmap :states '(normal) :keymaps 'override
+    "z a" '(org-cycle :which-key "org toggle fold"))
+#+end_src
+
+* Appearance
+** basic configuration
 #+begin_src emacs-lisp
   (setq inhibit-startup-message t)
 
-  (set-language-environment 'utf-8)
-  (setq locale-coding-system 'utf-8)
+  (tool-bar-mode -1)
+  (menu-bar-mode -1)
 
-  (prefer-coding-system 'utf-8)
-  (setq default-file-name-coding-system 'utf-8)
-  (set-default-coding-systems 'utf-8)
-  (set-terminal-coding-system 'utf-8)
-  (set-keyboard-coding-system 'utf-8)
+  (scroll-bar-mode -1)
+  (customize-set-variable 'scroll-bar-mode nil)
+  (customize-set-variable 'horizontal-scroll-bar-mode nil)
 
-  (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
+  (global-hl-line-mode t)
 
-  (setq backup-directory-alist `((".*" . "~/emacs_backups")))
+  (add-to-list 'default-frame-alist
+               '(vertical-scroll-bars . nil))
 
-  (run-at-time (current-time) 300 'recentf-save-list)
+  ;; (line-number-mode t)
+  (global-display-line-numbers-mode t)
+#+end_src
+** fonts
+#+begin_src emacs-lisp
+  (use-package nerd-icons
+    :ensure t
+    :custom
+    (nerd-icons-font-family "FantasqueSansM Nerd Font"))
 
   (add-to-list 'default-frame-alist '(font . "FantasqueSansM Nerd Font-16"))
+
+  (use-package unicode-fonts
+    :ensure t
+    :init
+    (unicode-fonts-setup))
 #+end_src
-* Ligatures
+** ligatures
 #+begin_src emacs-lisp
   (dolist (char/ligature-re
            `((?-  . ,(rx (or (or "-->" "-<<" "->>" "-|" "-~" "-<" "->") (+ "-"))))
@@ -112,95 +250,72 @@
       (set-char-table-range composition-function-table char
                             `([,ligature-re 0 font-shape-gstring]))))
 #+end_src
-* Minor modes
+** theme
 #+begin_src emacs-lisp
-  (tool-bar-mode -1)
-  (menu-bar-mode -1)
-  (electric-pair-mode t)
-  (electric-indent-mode t)
-
-  (scroll-bar-mode -1)
-  (customize-set-variable 'scroll-bar-mode nil)
-  (customize-set-variable 'horizontal-scroll-bar-mode nil)
-
-  (global-hl-line-mode t)
-  (line-number-mode t)
-  (global-display-line-numbers-mode t)
-  (add-to-list 'default-frame-alist
-	       '(vertical-scroll-bars . nil))
-  (global-auto-revert-mode)
-#+end_src
-* Packages
-** evil
-#+begin_src emacs-lisp
-  (use-package evil
-    :ensure t
-    :init
-    (setq evil-want-integration t)
-    (setq evil-want-keybinding nil)
-    (setq evil-vsplit-window-right t)
-    (setq evil-split-window-below t)
-    (setq evil-default-cursor t)
-    (evil-mode t))
-
-  (use-package evil-collection
-    :ensure t
-    :after evil
-    :config
-    (setq evil-collection-mode-list '(dashboard dired ibuffer magit))
-    (evil-collection-init))
-
-  (use-package evil-commentary
-    :ensure t
-    :after evil
-    :init (evil-commentary-mode))
-
-  (use-package vimish-fold
-    :ensure t
-    :after evil)
-
-  (use-package evil-vimish-fold
-    :ensure t
-    :after vimish-fold
-    :hook ((prog-mode conf-mode text-mode) . evil-vimish-fold-mode))
-
-  (use-package evil-anzu
+  (use-package doom-themes
     :ensure t
     :config
-    (global-anzu-mode))
+    (load-theme 'doom-ayu-dark t)
+    (doom-themes-org-config))
 #+end_src
-** general
+** modeline
 #+begin_src emacs-lisp
-  (use-package general
+  (use-package doom-modeline
     :ensure t
-    :config
-    (general-evil-setup t))
-#+end_src
-** nerd-icons
-#+begin_src emacs-lisp
-  (use-package nerd-icons
-    :ensure t
+    :hook (after-init . doom-modeline-mode)
     :custom
-    (nerd-icons-font-family "FantasqueSansM Nerd Font"))
+    (doom-modeline-height 30))
 #+end_src
 ** dashboard
 #+begin_src emacs-lisp
   (use-package dashboard
     :ensure t
+    :custom
+    (dashboard-banner-logo-title "Welcome to Emacs")
+    (dashboard-startup-banner 'logo)
+    (dashboard-display-icons-p t)
+    (dashboard-icon-type 'nerd-icons)
+    (dashboard-set-file-icons t)
+    (dashboard-set-heading-icons t)
+    (dashboard-show-shortcuts t)
+    (dashboard-center-content t)
+    (initial-buffer-choice (lambda () (get-buffer-create dashboard-buffer-name)))
     :config
-    (setq dashboard-banner-logo-title "Welcome to Emacs")
-    (setq dashboard-banner-logo-png "~/.emacs.d/logo.png")
-    (setq dashboard-startup-banner 'logo)
-    (setq dashboard-set-file-icons t)
-    (setq dashboard-set-heading-icons t)
-    (setq dashboard-show-shortcuts t)
-    (setq dashboard-center-content t)
-    (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
-    (dashboard-setup-startup-hook))
+    (dashboard-setup-startup-hook)
+    :init
+    (dashboard-open))
+#+end_src
+** vertico
+#+begin_src emacs-lisp
+  (use-package vertico
+    :ensure t
+    :custom
+    (vertico-count 15)
+    :config
+    (vertico-mode))
+#+end_src
+** which-key
+#+begin_src emacs-lisp
+  (use-package which-key
+    :ensure t
+    :config
+    (which-key-mode t))
+#+end_src
+* Emacs builtins
+** custom-file
+#+begin_src emacs-lisp
+  (setq custom-file "~/.emacs.d/custom.el")
+  (load custom-file)
+#+end_src
+** backups
+#+begin_src emacs-lisp
+  (setq backup-directory-alist `((".*" . "~/emacs_backups")))
 #+end_src
 ** dired
 #+begin_src emacs-lisp
   (require 'dired)
+
+  (put 'dired-find-alternate-file 'disabled nil)
 
   (with-eval-after-load 'dired
     (setq dired-listing-switches "-Dhlv --group-directories-first"))
@@ -225,58 +340,48 @@
       (evil-define-key 'normal peep-dired-mode-map (kbd "j") 'peep-dired-next-file)
       (evil-define-key 'normal peep-dired-mode-map (kbd "k") 'peep-dired-prev-file)))
 #+end_src
-** lsp-mode
+** recentf
 #+begin_src emacs-lisp
-  (use-package lsp-mode
-    :ensure t)
-
-  (use-package rust-mode
-    :ensure t)
+  (run-at-time (current-time) 300 'recentf-save-list)
 #+end_src
-** emacs
+** warnings
 #+begin_src emacs-lisp
-  (use-package emacs
-    :custom
-    (tab-always-indent 'complete)
-    (text-mode-ispell-word-completion nil)
-    (read-extended-command-predicate #'command-completion-default-include-p))
+  (setq warning-minimum-level :emergency)
 #+end_src
-** magit
+** utf8
 #+begin_src emacs-lisp
-  (use-package magit
-    :ensure t)
+  (set-language-environment 'utf-8)
 #+end_src
-** org-mode
-*** config
+* Org mode
 #+begin_src emacs-lisp
   (setq org-startup-folded t)
   (setq org-hidden-keywords '(title))
   (setq org-return-follows-link t)
 
   (setq org-todo-keywords
-	(quote ((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
-		(sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)"))))
+        (quote ((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
+                (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)"))))
 
   (setq-default org-enforce-todo-dependencies t)
 
   (setq org-todo-keyword-faces
-	(quote (("TODO" :foreground "indian red" :weight bold)
-		("NEXT" :foreground "light blue" :weight bold)
-		("DONE" :foreground "light green" :weight bold)
-		("WAITING" :foreground "chocolate" :weight bold)
-		("CANCELLED" :foreground "dim gray" :weight bold))))
+        (quote (("TODO" :foreground "indian red" :weight bold)
+                ("NEXT" :foreground "light blue" :weight bold)
+                ("DONE" :foreground "light green" :weight bold)
+                ("WAITING" :foreground "chocolate" :weight bold)
+                ("CANCELLED" :foreground "dim gray" :weight bold))))
 
   (setq-default org-export-with-todo-keywords nil)
 
   (with-eval-after-load 'org-superstar
     (setq org-superstar-item-bullet-alist
-	  '((?* . ?•)
-	    (?+ . ?➤)
-	    (?- . ?•)))
+          '((?* . ?•)
+            (?+ . ?➤)
+            (?- . ?•)))
 
     (setq org-superstar-leading-bullet ?\s)
     (setq org-superstar-headline-bullets-list
-	  '("◉" "◈" "○" "▷"))
+          '("◉" "◈" "○" "▷"))
     (org-superstar-restart))
 
 
@@ -291,8 +396,8 @@
     "Set font to a variable width (proportional) fonts in current buffer"
     (interactive)
     (setq buffer-face-mode-face '(:family "FantasqueSansM Nerd Font"
-					  :height 160
-					  :width normal))
+                                          :height 160
+                                          :width normal))
     (buffer-face-mode))
 
   (defun my/set-faces-org ()
@@ -312,21 +417,21 @@
     (setq org-n-level-faces 4)
 
     (set-face-attribute 'org-document-title nil
-			:height 2.074
-			:foreground 'unspecified
-			:inherit 'org-level-8))
+                        :height 2.074
+                        :foreground 'unspecified
+                        :inherit 'org-level-8))
 
   (defun my/set-keyword-faces-org ()
     (mapc (lambda (pair) (push pair prettify-symbols-alist))
-	  '(;; Syntax
-	    ("TODO" .     "")
-	    ("DONE" .     "")
-	    ("WAITING" .  "")
-	    ("HOLD" .     "")
-	    ("NEXT" .     "")
-	    ("CANCELLED" . "")
-	    ("#+begin_quote" . "“")
-	    ("#+end_quote" . "”")))
+          '(;; Syntax
+            ("TODO" .     "")
+            ("DONE" .     "")
+            ("WAITING" .  "")
+            ("HOLD" .     "")
+            ("NEXT" .     "")
+            ("CANCELLED" . "")
+            ("#+begin_quote" . "“")
+            ("#+end_quote" . "”")))
     )
 
   (defun my/style-org ()
@@ -336,7 +441,13 @@
   (add-hook 'org-mode-hook 'my/style-org)
   (add-hook 'org-mode-hook 'org-indent-mode)
 #+end_src
-*** extentions
+** babel
+#+begin_src emacs-lisp
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((python . t))) 
+#+end_src
+** extentions
 **** org-auto-tangle
 #+begin_src emacs-lisp
   (use-package org-auto-tangle
@@ -387,41 +498,69 @@
     ;; If using org-roam-protocol
     (require 'org-roam-protocol))
 #+end_src
-** treemacs
+* Code
+** minor modes
 #+begin_src emacs-lisp
-  (use-package treemacs
-    :ensure t)
+  (electric-pair-mode t)
+  (electric-indent-mode t)
 
-  (use-package treemacs-nerd-icons
-    :ensure t
-    :config
-    (treemacs-load-theme "nerd-icons"))
+  (global-auto-revert-mode)
 
-  (use-package treemacs-evil
-    :ensure t
-    :after (treemacs evil))
+  (setq indent-tabs-mode nil)
 #+end_src
-** unicode-fonts
+** eglot
 #+begin_src emacs-lisp
-  (use-package unicode-fonts
+  (use-package eglot
+    :ensure t
+    :custom
+    (eldoc-echo-area-use-multiline-p nil))
+#+end_src
+** corfu
+#+begin_src emacs-lisp
+  (use-package corfu
+    :ensure t
+    :custom
+    (corfu-cycle t)
+    (corfu-auto t)
+    (corfu-auto-prefix 2)
+    (corfu-auto-delay 0.25)
+    (corfu-quit-at-boundary 'separator)
+    (corfu-preview-current 'insert)
+    (corfu-preselect-first nil)
+    (corfu-popupinfo-mode t)
+    :bind (:map corfu-map
+                ("M-SPC" . corfu-insert-separator)
+                ("RET" . nil)
+                ("TAB" . corfu-next)
+                ([tab] . corfu-next)
+                ("S-TAB" . corfu-previous)
+                ([backtab] . corfu-previous)
+                ("S-<return>" . corfu-insert))
+    :init
+    (global-corfu-mode))
+
+  (use-package emacs
+    :custom
+    (tab-always-indent 'complete)
+    (text-mode-ispell-word-completion nil)
+    (read-extended-command-predicate #'command-completion-default-include-p))
+
+  (use-package cape
+    :ensure t
+    :bind ("C-c p" . cape-prefix-map)
+    :init
+    (add-hook 'completion-at-point-functions #'cape-dabbrev)
+    (add-hook 'completion-at-point-functions #'cape-file)
+    (add-hook 'completion-at-point-functions #'cape-elisp-block))
+
+  (use-package nerd-icons-corfu
     :ensure t
     :init
-    (unicode-fonts-setup))
+    (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
 #+end_src
-** vertico
+** magit
 #+begin_src emacs-lisp
-  (use-package vertico
-    :ensure t
-    :config
-    (vertico-mode)
-    (setq vertico-count 15))
-#+end_src
-** which-key
-#+begin_src emacs-lisp
-  (use-package which-key
-    :ensure t
-    :config
-    (which-key-mode t))
+  (use-package magit :ensure t)
 #+end_src
 ** yasnippet
 #+begin_src emacs-lisp
@@ -434,168 +573,57 @@
     :ensure t
     :after yasnippet)
 #+end_src
-** ellama
+** treemacs
 #+begin_src emacs-lisp
-  (use-package ellama
-    :ensure t
-    :after llm
-    :init
-    (setopt ellama-language "English")
-    (require 'llm-ollama)
-    (setopt ellama-provider
-            (make-llm-ollama
-             :chat-model "deepseek-coder-v2:16b-lite-base-q4_0" :embedding-model "deepseek-coder-v2:16b-lite-instruct-q4_0")))
-#+end_src
-** doom
-#+begin_src emacs-lisp
-  (use-package doom-themes
-    :ensure t
-    :config
-    (load-theme 'doom-ayu-dark t)
-    (doom-themes-org-config))
+  (use-package treemacs :ensure t)
 
-  (use-package doom-modeline
+  (use-package treemacs-nerd-icons
     :ensure t
-    :hook (after-init . doom-modeline-mode)
     :config
-    (setq doom-modeline-height 25))
-#+end_src
-** nix-mode
-#+begin_src emacs-lisp
-  (use-package nix-mode
+    (treemacs-load-theme "nerd-icons"))
+
+  (use-package treemacs-evil
     :ensure t
-    :mode "\\.nix\\'") 
+    :after (treemacs evil))
 #+end_src
-** treesit
+** rust
 #+begin_src emacs-lisp
-  (use-package treesit
-    :ensure nil
-    :when (treesit-available-p)
+  (use-package rust-mode
+    :ensure t
+    :custom
+    (rust-format-on-save t)
+    (eglot-workspace-configuration
+     '(:rust-analyzer
+       ( :procMacro ( :attributes (:enable t)
+                      :enable t)
+         :cargo (:buildScripts (:enable t))
+         :diagnostics (:disabled ["unresolved-proc-macro"
+                                  "unresolved-macro-call"]))))
+    :mode (("\\.rs\\'" . rust-mode))
+    :hook ((rust-mode . eglot-ensure)))
+#+end_src
+** python
+#+begin_src emacs-lisp
+  (use-package elpy
+    :ensure t
+    :custom
+    (elpy-shell-echo-output nil)
+    :mode (("\\.py\\'" . elpy-mode))
+    :hook ((elpy-mode . eglot-ensure))
     :init
-    (setq treesit-font-lock-level 3)
-    (setq major-mode-remap-alist
-          '((python-mode . python-ts-mode))))
+    (elpy-enable))
+#+end_src
+** web
+#+begin_src emacs-lisp
+  (use-package web-mode :ensure t)
 #+end_src
 ** docker
 #+begin_src emacs-lisp
-  (use-package dockerfile-mode
-    :ensure t)
+  (use-package dockerfile-mode :ensure t)
 #+end_src
-** company
+** nix
 #+begin_src emacs-lisp
-  (use-package company :ensure t) 
-#+end_src
-** web-mode
-#+begin_src emacs-lisp
-  (use-package web-mode :ensure t) 
-#+end_src
-** flycheck
-#+begin_src emacs-lisp
-  (use-package flycheck :ensure t)
-#+end_src
-
-** tide
-#+begin_src emacs-lisp
-  (use-package tide :ensure t)
-
-  (defun setup-tide-mode ()
-    (interactive)
-    (tide-setup)
-    (flycheck-mode +1)
-    (setq flycheck-check-syntax-automatically '(save mode-enabled))
-    (eldoc-mode +1)
-    (tide-hl-identifier-mode +1)
-    (company-mode +1))
-
-  (setq company-tooltip-align-annotations t)
-
-  (add-hook 'before-save-hook 'tide-format-before-save)
-
-  (add-hook 'typescript-mode-hook #'setup-tide-mode)
-
-  (require 'web-mode)
-
-  (add-to-list 'auto-mode-alist '("\\.tsx\\'" . web-mode))
-  (add-hook 'web-mode-hook
-            (lambda ()
-              (when (string-equal "tsx" (file-name-extension buffer-file-name))
-                (setup-tide-mode))))
-
-  (flycheck-add-mode 'typescript-tslint 'web-mode)
-#+end_src
-
-* Keys
-#+begin_src emacs-lisp
-  (nvmap :states '(normal visual motion emacs) :keymaps 'override :prefix "SPC"
-    "f" '(:which-key "file")
-    "f f" '(find-file :which-key "find file")
-    "f s" '(save-buffer :which-key "save file")
-    "f S" '((lambda () (interactive) (load-file "~/.emacs.d/init.el")) :which-key "source init.el")
-    "f b" '(:which-key "bookmark")
-    "f b b" '(bookmark-jump :which-key "jump to bookmark")
-    "f b s" '(bookmark-set :which-key "set bookmark")
-    "f b d" '(bookmark-delete :which-key "delete bookmark")
-
-    "w" '(:which-key "window")
-    "w s" '(split-window-below :which-key "split window horizontally")
-    "w v" '(split-window-right :which-key "split window vertically")
-    "w c" '(delete-window :which-key "close window")
-    "w w" '(next-window-any-frame :which-key "switch window")
-
-    "b" '(:which-key "buffer")
-    "b d" '(kill-current-buffer :which-key "kill buffer")
-    "b n" '(next-buffer :which-key "next buffer")
-    "b p" '(previous-buffer :which-key "previous buffer")
-    "b i" '(ibuffer :which-key "ibuffer")
-
-    "q" '(:which-key "quit")
-    "q q" '(save-buffers-kill-terminal :which-key "quit emacs")
-    "q f" '(delete-frame :which-key "quit emacsclient")
-
-    "d" '(:which-key "dired")
-    "d d" '(dired :which-key "open dired")
-    "d j" '(dired-jump :which-key "dired jump")
-    "d p" '(peep-dired :which-key "peep dired")
-
-    "a" '(:which-key "apps")
-    "a t" '(treemacs :which-key "open treemacs")
-    "a g" '(magit-status-here :which-key "magit")
-    "a i" '(ibuffer :which-key "ibuffer")
-
-    "h" '(:which-key "help")
-    "h t" '(load-theme :which-key "load theme")
-    "h v" '(describe-variable :which-key "describe variable")
-    "h f" '(describe-function :which-key "describe function")
-    "h k" '(describe-key :which-key "describe key")
-    "h m" '(modus-themes-toggle :which-key "toggle modus theme")
-
-    "r" '(:which-key "region")
-    "r c" '(to-cyrillic :which-key "translate region to cyrillic")
-
-    "o" '(:which-key "org")
-    "o p" '(org-latex-preview :which-key "preview latex fragments")
-    "o R" '(org-mode-restart :which-key "restart org")
-    "o e" '(org-export-dispatch :which-key "org export dispatch")
-    "o r" '(:which-key "org roam")
-    "o r f" '(org-roam-node-find :which-key "node find")
-    "o r i" '(org-roam-node-insert :which-key "node insert")
-    "o r g" '(org-roam-graph :which-key "nodes graph")
-
-    "i" '(:which-key "insert")
-    "i s" '(yas/insert-snippet :which-key "insert snippet")
-    "i n" '(yas/new-snippet :which-key "new snippet")
-
-    "e" '(:which-key "eval")
-    "e b" '(eval-buffer :which-key "eval buffer")
-    "e r" '(eval-region :which-key "eval region")
-    "e e" '(eval-expression :which-key "eval expression")
-    "e l" '(eval-last-sexp :which-key "eval last expression"))
-
-  (nvmap :states '(normal) :keymaps 'override
-    "z a" '(org-cycle :which-key "org toggle fold"))
-#+end_src
-* Custom
-#+begin_src emacs-lisp
-  (setq custom-file "~/.emacs.d/custom.el")
-  (load custom-file)
+  (use-package nix-mode
+    :ensure t
+    :mode (("\\.nix\\'" . nix-mode)))
 #+end_src
