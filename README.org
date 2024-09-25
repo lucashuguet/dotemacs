@@ -42,6 +42,7 @@
   - [[#web][web]]
   - [[#docker][docker]]
   - [[#nix][nix]]
+  - [[#yaml][yaml]]
 
 * Pkg Management
 ** melpa
@@ -626,4 +627,11 @@ Vim motions emulator in emacs
   (use-package nix-mode
     :ensure t
     :mode (("\\.nix\\'" . nix-mode)))
+#+end_src
+** yaml
+#+begin_src emacs-lisp
+  (use-package yaml-mode
+    :ensure t
+    :mode (("\\.yml\\'" . yaml-mode)
+           ("\\.yaml\\'" . yaml-mode)))
 #+end_src

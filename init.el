@@ -499,3 +499,8 @@
 (use-package nix-mode
   :ensure t
   :mode (("\\.nix\\'" . nix-mode)))
+
+(use-package yaml-mode
+  :ensure t
+  :mode (("\\.yml\\'" . yaml-mode)
+         ("\\.yaml\\'" . yaml-mode)))

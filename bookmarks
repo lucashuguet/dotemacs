@@ -2,7 +2,13 @@
 ;;; This format is meant to be slightly human-readable;
 ;;; nevertheless, you probably don't want to edit it.
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
-(("emacs"
+(("flake.nix"
+ (filename . "~/nixos/flake.nix")
+ (front-context-string . "{\n  description ")
+ (rear-context-string)
+ (position . 1)
+ (last-modified 26340 48208 601761 402000))
+("emacs"
  (filename . "~/.emacs.d/README.org")
  (front-context-string . "#+title: Emacs c")
  (rear-context-string)
