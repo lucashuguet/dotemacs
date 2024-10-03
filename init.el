@@ -350,6 +350,8 @@
 (add-hook 'org-mode-hook 'my/style-org)
 (add-hook 'org-mode-hook 'org-indent-mode)
 
+(setq org-format-latex-options (plist-put org-format-latex-options :scale 2.0))
+
 (org-babel-do-load-languages
  'org-babel-load-languages
  '((python . t)))
