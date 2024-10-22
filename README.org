@@ -7,10 +7,6 @@
 - [[#pkg-management][Pkg Management]]
   - [[#melpa][melpa]]
   - [[#use-package][use-package]]
-- [[#keymaps][Keymaps]]
-  - [[#evil][evil]]
-  - [[#general][general]]
-  - [[#keys][keys]]
 - [[#appearance][Appearance]]
   - [[#basic-configuration][basic configuration]]
   - [[#fonts][fonts]]
@@ -20,6 +16,10 @@
   - [[#dashboard][dashboard]]
   - [[#vertico][vertico]]
   - [[#which-key][which-key]]
+- [[#keymaps][Keymaps]]
+  - [[#evil][evil]]
+  - [[#general][general]]
+  - [[#keys][keys]]
 - [[#emacs-builtins][Emacs builtins]]
   - [[#custom-file][custom-file]]
   - [[#backups][backups]]
@@ -60,126 +60,6 @@
 
   (setq use-package-expand-minimally t)
 #+end_src
-* Keymaps
-** evil
-Vim motions emulator in emacs
-#+begin_src emacs-lisp
-  (use-package evil
-    :ensure t
-    :init
-    (setq evil-want-integration t)
-    (setq evil-want-keybinding nil)
-    (setq evil-vsplit-window-right t)
-    (setq evil-split-window-below t)
-    (setq evil-default-cursor t)
-    (setq evil-want-c-i-jump nil) ;; fixes indent in org mode
-    (evil-mode t))
-
-  (use-package evil-collection
-    :ensure t
-    :after evil
-    :config
-    (setq evil-collection-mode-list '(dashboard dired ibuffer magit))
-    (evil-collection-init))
-
-  (use-package evil-commentary
-    :ensure t
-    :after evil
-    :init (evil-commentary-mode))
-
-  (use-package vimish-fold
-    :ensure t
-    :after evil)
-
-  (use-package evil-vimish-fold
-    :ensure t
-    :after vimish-fold
-    :hook ((prog-mode conf-mode text-mode) . evil-vimish-fold-mode))
-
-  (use-package evil-anzu
-    :ensure t
-    :config
-    (global-anzu-mode))
-#+end_src
-** general
-#+begin_src emacs-lisp
-  (use-package general
-    :ensure t
-    :config
-    (general-evil-setup t))
-#+end_src
-** keys
-#+begin_src emacs-lisp
-  (nvmap :states '(normal visual motion emacs) :keymaps 'override :prefix "SPC"
-    "f" '(:which-key "file")
-    "f f" '(find-file :which-key "find file")
-    "f s" '(save-buffer :which-key "save file")
-    "f S" '((lambda () (interactive) (load-file "~/.emacs.d/init.el")) :which-key "source init.el")
-    "f b" '(:which-key "bookmark")
-    "f b b" '(bookmark-jump :which-key "jump to bookmark")
-    "f b s" '(bookmark-set :which-key "set bookmark")
-    "f b d" '(bookmark-delete :which-key "delete bookmark")
-
-    "w" '(:which-key "window")
-    "w s" '(split-window-below :which-key "split window horizontally")
-    "w v" '(split-window-right :which-key "split window vertically")
-    "w c" '(delete-window :which-key "close window")
-    "w w" '(next-window-any-frame :which-key "switch window")
-
-    "b" '(:which-key "buffer")
-    "b d" '(kill-current-buffer :which-key "kill buffer")
-    "b n" '(next-buffer :which-key "next buffer")
-    "b p" '(previous-buffer :which-key "previous buffer")
-    "b i" '(ibuffer :which-key "ibuffer")
-
-    "q" '(:which-key "quit")
-    "q q" '(save-buffers-kill-terminal :which-key "quit emacs")
-    "q f" '(delete-frame :which-key "quit emacsclient")
-
-    "d" '(:which-key "dired")
-    "d d" '(dired :which-key "open dired")
-    "d j" '(dired-jump :which-key "dired jump")
-    "d p" '(peep-dired :which-key "peep dired")
-
-    "a" '(:which-key "apps")
-    "a t" '(treemacs :which-key "open treemacs")
-    "a g" '(magit-status-here :which-key "magit")
-    "a i" '(ibuffer :which-key "ibuffer")
-
-    "h" '(:which-key "help")
-    "h t" '(load-theme :which-key "load theme")
-    "h v" '(describe-variable :which-key "describe variable")
-    "h f" '(describe-function :which-key "describe function")
-    "h k" '(describe-key :which-key "describe key")
-    "h m" '(describe-mode :which-key "describe mode")
-
-    "r" '(:which-key "region")
-    "r c" '(to-cyrillic :which-key "translate region to cyrillic")
-
-    "o" '(:which-key "org")
-    "o p" '(org-latex-preview :which-key "preview latex fragments")
-    "o R" '(org-mode-restart :which-key "restart org")
-    "o e" '(org-export-dispatch :which-key "org export dispatch")
-    "o E" '(org-edit-special :which-key "org edit special")
-    "o r" '(:which-key "org roam")
-    "o r f" '(org-roam-node-find :which-key "node find")
-    "o r i" '(org-roam-node-insert :which-key "node insert")
-    "o r g" '(org-roam-graph :which-key "nodes graph")
-
-    "i" '(:which-key "insert")
-    "i s" '(yas/insert-snippet :which-key "insert snippet")
-    "i n" '(yas/new-snippet :which-key "new snippet")
-
-    "e" '(:which-key "eval")
-    "e b" '(eval-buffer :which-key "eval buffer")
-    "e r" '(eval-region :which-key "eval region")
-    "e e" '(eval-expression :which-key "eval expression")
-    "e l" '(eval-last-sexp :which-key "eval last expression"))
-
-  (nvmap :states '(normal) :keymaps 'override
-    "z a" '(org-cycle :which-key "org toggle fold"))
-#+end_src
-
 * Appearance
 ** basic configuration
 #+begin_src emacs-lisp
@@ -274,8 +154,8 @@ Vim motions emulator in emacs
     :custom
     (dashboard-banner-logo-title "Welcome to Emacs")
     (dashboard-startup-banner 'logo)
-    (dashboard-display-icons-p t)
     (dashboard-icon-type 'nerd-icons)
+    (dashboard-display-icons-p t)
     (dashboard-set-file-icons t)
     (dashboard-set-heading-icons t)
     (dashboard-show-shortcuts t)
@@ -302,6 +182,127 @@ Vim motions emulator in emacs
     :config
     (which-key-mode t))
 #+end_src
+* Keymaps
+** evil
+Vim motions emulator in emacs
+#+begin_src emacs-lisp
+  (use-package evil
+    :ensure t
+    :init
+    (setq evil-want-integration t)
+    (setq evil-want-keybinding nil)
+    (setq evil-vsplit-window-right t)
+    (setq evil-split-window-below t)
+    (setq evil-default-cursor t)
+    (setq evil-want-c-i-jump nil) ;; fixes indent in org mode
+    (evil-mode t))
+
+  (use-package evil-collection
+    :ensure t
+    :after evil
+    :config
+    (setq evil-collection-mode-list '(dashboard dired ibuffer magit))
+    (evil-collection-init))
+
+  (use-package evil-commentary
+    :ensure t
+    :after evil
+    :init (evil-commentary-mode))
+
+  (use-package vimish-fold
+    :ensure t
+    :after evil)
+
+  (use-package evil-vimish-fold
+    :ensure t
+    :after vimish-fold
+    :hook ((prog-mode conf-mode text-mode) . evil-vimish-fold-mode))
+
+  (use-package evil-anzu
+    :ensure t
+    :config
+    (global-anzu-mode))
+#+end_src
+** general
+#+begin_src emacs-lisp
+  (use-package general
+    :ensure t
+    :config
+    (general-evil-setup t))
+#+end_src
+** keys
+#+begin_src emacs-lisp
+  (nvmap :states '(normal visual motion emacs) :keymaps 'override :prefix "SPC"
+    "f" '(:which-key "file")
+    "f f" '(find-file :which-key "find file")
+    "f s" '(save-buffer :which-key "save file")
+    "f S" '((lambda () (interactive) (load-file "~/.emacs.d/init.el")) :which-key "source init.el")
+    "f b" '(:which-key "bookmark")
+    "f b b" '(bookmark-jump :which-key "jump to bookmark")
+    "f b s" '(bookmark-set :which-key "set bookmark")
+    "f b d" '(bookmark-delete :which-key "delete bookmark")
+
+    "w" '(:which-key "window")
+    "w s" '(split-window-below :which-key "split window horizontally")
+    "w v" '(split-window-right :which-key "split window vertically")
+    "w c" '(delete-window :which-key "close window")
+    "w w" '(next-window-any-frame :which-key "switch window")
+
+    "b" '(:which-key "buffer")
+    "b d" '(kill-current-buffer :which-key "kill buffer")
+    "b n" '(next-buffer :which-key "next buffer")
+    "b p" '(previous-buffer :which-key "previous buffer")
+    "b i" '(ibuffer :which-key "ibuffer")
+
+    "q" '(:which-key "quit")
+    "q q" '(save-buffers-kill-terminal :which-key "quit emacs")
+    "q f" '(delete-frame :which-key "quit emacsclient")
+
+    "d" '(:which-key "dired")
+    "d d" '(dired :which-key "open dired")
+    "d j" '(dired-jump :which-key "dired jump")
+    "d p" '(peep-dired :which-key "peep dired")
+
+    "a" '(:which-key "apps")
+    "a t" '(treemacs :which-key "open treemacs")
+    "a g" '(magit-status-here :which-key "magit")
+    "a i" '(ibuffer :which-key "ibuffer")
+
+    "h" '(:which-key "help")
+    "h t" '((lambda () (interactive) (load-theme (nth 1 custom-enabled-themes) t)) :which-key "cycle last two themes")
+    "h T" '(load-theme :which-key "load theme")
+    "h v" '(describe-variable :which-key "describe variable")
+    "h f" '(describe-function :which-key "describe function")
+    "h k" '(describe-key :which-key "describe key")
+    "h m" '(describe-mode :which-key "describe mode")
+
+    "r" '(:which-key "region")
+    "r c" '(to-cyrillic :which-key "translate region to cyrillic")
+
+    "o" '(:which-key "org")
+    "o p" '(org-latex-preview :which-key "preview latex fragments")
+    "o R" '(org-mode-restart :which-key "restart org")
+    "o e" '(org-export-dispatch :which-key "org export dispatch")
+    "o E" '(org-edit-special :which-key "org edit special")
+    "o r" '(:which-key "org roam")
+    "o r f" '(org-roam-node-find :which-key "node find")
+    "o r i" '(org-roam-node-insert :which-key "node insert")
+    "o r g" '(org-roam-graph :which-key "nodes graph")
+
+    "i" '(:which-key "insert")
+    "i s" '(yas/insert-snippet :which-key "insert snippet")
+    "i n" '(yas/new-snippet :which-key "new snippet")
+
+    "e" '(:which-key "eval")
+    "e b" '(eval-buffer :which-key "eval buffer")
+    "e r" '(eval-region :which-key "eval region")
+    "e e" '(eval-expression :which-key "eval expression")
+    "e l" '(eval-last-sexp :which-key "eval last expression"))
+
+  (nvmap :states '(normal) :keymaps 'override
+    "z a" '(org-cycle :which-key "org toggle fold"))
+#+end_src
+
 * Emacs builtins
 ** custom-file
 #+begin_src emacs-lisp
