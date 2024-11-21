@@ -524,7 +524,18 @@
   :init
   (elpy-enable))
 
-(use-package web-mode :ensure t)
+(use-package web-mode
+  :ensure t
+  :mode
+  (("\\.html\\'" . web-mode)
+   ("\\.js\\'" . web-mode)
+   ("\\.css\\'" . web-mode)))
+
+(use-package emmet-mode
+  :ensure t
+  :hook
+  ((web-mode . emmet-mode)
+   (tsx-mode . emmet-mode)))
 
 (use-package dockerfile-mode :ensure t)
 

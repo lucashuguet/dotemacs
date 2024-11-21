@@ -651,7 +651,18 @@ Vim motions emulator in emacs
 #+end_src
 ** web
 #+begin_src emacs-lisp
-  (use-package web-mode :ensure t)
+  (use-package web-mode
+    :ensure t
+    :mode
+    (("\\.html\\'" . web-mode)
+     ("\\.js\\'" . web-mode)
+     ("\\.css\\'" . web-mode)))
+
+  (use-package emmet-mode
+    :ensure t
+    :hook
+    ((web-mode . emmet-mode)
+     (tsx-mode . emmet-mode)))
 #+end_src
 ** docker
 #+begin_src emacs-lisp
