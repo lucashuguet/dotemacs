@@ -118,18 +118,6 @@
   :config
   (which-key-mode t))
 
-(use-package auctex
-  :ensure t  
-  :custom
-  (TeX-auto-save t)
-  (TeX-parse-self t)
-  (TeX-PDF-mode t)
-  :hook
-  (LaTeX-mode . prettify-symbols-mode))
-
-(use-package cdlatex
-  :ensure t)
-
 (use-package evil
   :ensure t
   :init
@@ -166,85 +154,6 @@
   :ensure t
   :config
   (global-anzu-mode))
-
-(use-package general
-  :ensure t
-  :config
-  (general-evil-setup t))
-
-(nvmap :states '(normal visual motion emacs) :keymaps 'override :prefix "SPC"
-  "f" '(:which-key "file")
-  "f f" '(find-file :which-key "find file")
-  "f s" '(save-buffer :which-key "save file")
-  "f S" '((lambda () (interactive) (load-file "~/.emacs.d/init.el")) :which-key "source init.el")
-  "f b" '(:which-key "bookmark")
-  "f b b" '(bookmark-jump :which-key "jump to bookmark")
-  "f b s" '(bookmark-set :which-key "set bookmark")
-  "f b d" '(bookmark-delete :which-key "delete bookmark")
-
-  "w" '(:which-key "window")
-  "w s" '(split-window-below :which-key "split window horizontally")
-  "w v" '(split-window-right :which-key "split window vertically")
-  "w c" '(delete-window :which-key "close window")
-  "w w" '(next-window-any-frame :which-key "switch window")
-
-  "b" '(:which-key "buffer")
-  "b d" '(kill-current-buffer :which-key "kill buffer")
-  "b n" '(next-buffer :which-key "next buffer")
-  "b p" '(previous-buffer :which-key "previous buffer")
-  "b i" '(ibuffer :which-key "ibuffer")
-
-  "q" '(:which-key "quit")
-  "q q" '(save-buffers-kill-terminal :which-key "quit emacs")
-  "q f" '(delete-frame :which-key "quit emacsclient")
-
-  "d" '(:which-key "dired")
-  "d d" '(dired :which-key "open dired")
-  "d j" '(dired-jump :which-key "dired jump")
-  "d p" '(peep-dired :which-key "peep dired")
-
-  "a" '(:which-key "apps")
-  "a t" '(treemacs :which-key "open treemacs")
-  "a g" '(magit-status-here :which-key "magit")
-  "a i" '(ibuffer :which-key "ibuffer")
-
-  "h" '(:which-key "help")
-  "h t" '((lambda () (interactive) (load-theme (nth 1 custom-enabled-themes) t)) :which-key "cycle last two themes")
-  "h T" '(load-theme :which-key "load theme")
-  "h v" '(describe-variable :which-key "describe variable")
-  "h f" '(describe-function :which-key "describe function")
-  "h k" '(describe-key :which-key "describe key")
-  "h m" '(describe-mode :which-key "describe mode")
-
-  "o" '(:which-key "org")
-  "o p" '(org-latex-preview :which-key "preview latex fragments")
-  "o R" '(org-mode-restart :which-key "restart org")
-  "o e" '(org-export-dispatch :which-key "org export dispatch")
-  "o E" '(org-edit-special :which-key "org edit special")
-  "o r" '(:which-key "org roam")
-  "o r f" '(org-roam-node-find :which-key "node find")
-  "o r i" '(org-roam-node-insert :which-key "node insert")
-  "o r g" '(org-roam-graph :which-key "nodes graph")
-
-  "i" '(:which-key "insert")
-  "i s" '(yas-insert-snippet :which-key "insert snippet")
-  "i n" '(yas-new-snippet :which-key "new snippet")
-  "i f" '(yas-visit-snippet-file :which-key "visit snippet")
-  "i a" '(add-global-abbrev :which-key "write new abbrev")
-
-  "e" '(:which-key "eval")
-  "e b" '(eval-buffer :which-key "eval buffer")
-  "e r" '(eval-region :which-key "eval region")
-  "e e" '(eval-expression :which-key "eval expression")
-  "e l" '(eval-last-sexp :which-key "eval last expression")
-
-  "l" '(:which-key "latex")
-  "l e" '(cdlatex-environment :which-key "latex environment")
-  "l c" '((lambda () (interactive) (TeX-command "LaTeXMkCompile" 'TeX-master-file -1)) :which-key "latex compile")
-  "l C" '((lambda () (interactive) (TeX-command "LaTeXMkClean" 'TeX-master-file -1)) :which-key "latex clean"))
-
-(nvmap :states '(normal) :keymaps 'override
-  "z a" '(org-cycle :which-key "org toggle fold"))
 
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file)
@@ -470,36 +379,36 @@
   :init
   (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
 
-(use-package magit :ensure t)
+(use-package magit
+  :ensure t)
 
 (use-package yasnippet
   :ensure t
   :config
   (yas-global-mode 1))
 
-(defun my-yas-try-expanding-auto-snippets ()
+(defun my/yas-try-expanding-auto-snippets ()
   (when (and (boundp 'yas-minor-mode) yas-minor-mode)
     (let ((yas-buffer-local-condition ''(require-snippet-condition . auto)))
       (yas-expand))))
 
-(add-hook 'post-self-insert-hook #'my-yas-try-expanding-auto-snippets)
+(add-hook 'post-self-insert-hook #'my/yas-try-expanding-auto-snippets)
 
-(setq abbrev-file-name
-      "~/.emacs.d/abbrev_defs")
+(setq abbrev-file-name "~/.emacs.d/abbrev_defs")
 
 (setq save-abbrevs 'silently)
 (setq-default abbrev-mode t)
 
-(use-package treemacs :ensure t)
+(use-package treemacs
+  :ensure t)
+
+(use-package treemacs-evil
+  :ensure t)
 
 (use-package treemacs-nerd-icons
   :ensure t
   :config
   (treemacs-load-theme "nerd-icons"))
-
-(use-package treemacs-evil
-  :ensure t
-  :after (treemacs evil))
 
 (use-package rust-mode
   :ensure t
@@ -512,15 +421,15 @@
        :cargo (:buildScripts (:enable t))
        :diagnostics (:disabled ["unresolved-proc-macro"
                                 "unresolved-macro-call"]))))
-  :mode (("\\.rs\\'" . rust-mode))
-  :hook ((rust-mode . eglot-ensure)))
+  :mode ("\\.rs\\'" . rust-mode)
+  :hook (rust-mode . eglot-ensure))
 
 (use-package elpy
   :ensure t
   :custom
   (elpy-shell-echo-output nil)
-  :mode (("\\.py\\'" . elpy-mode))
-  :hook ((elpy-mode . eglot-ensure))
+  :mode ("\\.py\\'" . elpy-mode)
+  :hook (elpy-mode . eglot-ensure)
   :init
   (elpy-enable))
 
@@ -537,7 +446,8 @@
   ((web-mode . emmet-mode)
    (tsx-mode . emmet-mode)))
 
-(use-package dockerfile-mode :ensure t)
+(use-package dockerfile-mode
+  :ensure t)
 
 (use-package nix-mode
   :ensure t
@@ -548,6 +458,97 @@
   :mode (("\\.yml\\'" . yaml-mode)
          ("\\.yaml\\'" . yaml-mode)))
 
+(use-package auctex
+  :ensure t  
+  :custom
+  (TeX-auto-save t)
+  (TeX-parse-self t)
+  (TeX-PDF-mode t)
+  :hook
+  (LaTeX-mode . prettify-symbols-mode))
+
+(use-package cdlatex
+  :ensure t)
+
 (use-package julia-mode
   :ensure t
-  :mode (("\\.jl\\'" . julia-mode)))
+  :mode ("\\.jl\\'" . julia-mode))
+
+(use-package general
+  :ensure t
+  :config
+  (general-evil-setup t))
+
+(nvmap :states '(normal visual motion emacs) :keymaps 'override :prefix "SPC"
+  "f" '(:which-key "file")
+  "f f" '(find-file :which-key "find file")
+  "f s" '(save-buffer :which-key "save file")
+  "f S" '((lambda () (interactive) (load-file "~/.emacs.d/init.el")) :which-key "source init.el")
+  "f b" '(:which-key "bookmark")
+  "f b b" '(bookmark-jump :which-key "jump to bookmark")
+  "f b s" '(bookmark-set :which-key "set bookmark")
+  "f b d" '(bookmark-delete :which-key "delete bookmark")
+
+  "w" '(:which-key "window")
+  "w s" '(split-window-below :which-key "split window horizontally")
+  "w v" '(split-window-right :which-key "split window vertically")
+  "w c" '(delete-window :which-key "close window")
+  "w w" '(next-window-any-frame :which-key "switch window")
+
+  "b" '(:which-key "buffer")
+  "b d" '(kill-current-buffer :which-key "kill buffer")
+  "b n" '(next-buffer :which-key "next buffer")
+  "b p" '(previous-buffer :which-key "previous buffer")
+  "b i" '(ibuffer :which-key "ibuffer")
+
+  "q" '(:which-key "quit")
+  "q q" '(save-buffers-kill-terminal :which-key "quit emacs")
+  "q f" '(delete-frame :which-key "quit emacsclient")
+
+  "d" '(:which-key "dired")
+  "d d" '(dired :which-key "open dired")
+  "d j" '(dired-jump :which-key "dired jump")
+  "d p" '(peep-dired :which-key "peep dired")
+
+  "a" '(:which-key "apps")
+  "a t" '(treemacs :which-key "open treemacs")
+  "a g" '(magit-status-here :which-key "magit")
+  "a i" '(ibuffer :which-key "ibuffer")
+
+  "h" '(:which-key "help")
+  "h t" '((lambda () (interactive) (load-theme (nth 1 custom-enabled-themes) t)) :which-key "cycle last two themes")
+  "h T" '(load-theme :which-key "load theme")
+  "h v" '(describe-variable :which-key "describe variable")
+  "h f" '(describe-function :which-key "describe function")
+  "h k" '(describe-key :which-key "describe key")
+  "h m" '(describe-mode :which-key "describe mode")
+
+  "o" '(:which-key "org")
+  "o p" '(org-latex-preview :which-key "preview latex fragments")
+  "o R" '(org-mode-restart :which-key "restart org")
+  "o e" '(org-export-dispatch :which-key "org export dispatch")
+  "o E" '(org-edit-special :which-key "org edit special")
+  "o r" '(:which-key "org roam")
+  "o r f" '(org-roam-node-find :which-key "node find")
+  "o r i" '(org-roam-node-insert :which-key "node insert")
+  "o r g" '(org-roam-graph :which-key "nodes graph")
+
+  "i" '(:which-key "insert")
+  "i s" '(yas-insert-snippet :which-key "insert snippet")
+  "i n" '(yas-new-snippet :which-key "new snippet")
+  "i f" '(yas-visit-snippet-file :which-key "visit snippet")
+  "i a" '(add-global-abbrev :which-key "write new abbrev")
+
+  "e" '(:which-key "eval")
+  "e b" '(eval-buffer :which-key "eval buffer")
+  "e r" '(eval-region :which-key "eval region")
+  "e e" '(eval-expression :which-key "eval expression")
+  "e l" '(eval-last-sexp :which-key "eval last expression")
+
+  "l" '(:which-key "latex")
+  "l e" '(cdlatex-environment :which-key "latex environment")
+  "l c" '((lambda () (interactive) (TeX-command "LaTeXMkCompile" 'TeX-master-file -1)) :which-key "latex compile")
+  "l C" '((lambda () (interactive) (TeX-command "LaTeXMkClean" 'TeX-master-file -1)) :which-key "latex clean"))
+
+(nvmap :states '(normal) :keymaps 'override
+  "z a" '(org-cycle :which-key "org toggle fold"))
