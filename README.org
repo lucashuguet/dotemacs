@@ -44,6 +44,7 @@
   - [[#docker][docker]]
   - [[#nix][nix]]
   - [[#yaml][yaml]]
+  - [[#julia][julia]]
 
 * Pkg Management
 ** melpa
@@ -668,4 +669,10 @@ Vim motions emulator in emacs
     :ensure t
     :mode (("\\.yml\\'" . yaml-mode)
            ("\\.yaml\\'" . yaml-mode)))
+#+end_src
+** julia
+#+begin_src emacs-lisp
+  (use-package julia-mode
+    :ensure t
+    :mode (("\\.jl\\'" . julia-mode)))
 #+end_src

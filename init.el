@@ -536,3 +536,7 @@
   :ensure t
   :mode (("\\.yml\\'" . yaml-mode)
          ("\\.yaml\\'" . yaml-mode)))
+
+(use-package julia-mode
+  :ensure t
+  :mode (("\\.jl\\'" . julia-mode)))
