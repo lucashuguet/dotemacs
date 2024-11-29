@@ -89,23 +89,6 @@
   :custom
   (doom-modeline-height 30))
 
-(use-package dashboard
-  :ensure t
-  :custom
-  (dashboard-banner-logo-title "Welcome to Emacs")
-  (dashboard-startup-banner 'logo)
-  (dashboard-icon-type 'nerd-icons)
-  (dashboard-display-icons-p t)
-  (dashboard-set-file-icons t)
-  (dashboard-set-heading-icons t)
-  (dashboard-show-shortcuts t)
-  (dashboard-center-content t)
-  (initial-buffer-choice (lambda () (get-buffer-create dashboard-buffer-name)))
-  :config
-  (dashboard-setup-startup-hook)
-  :init
-  (dashboard-open))
-
 (use-package vertico
   :ensure t
   :custom
@@ -160,6 +143,8 @@
 
 (setq backup-directory-alist `((".*" . "~/emacs_backups")))
 
+(setq ring-bell-function 'ignore)
+
 (require 'dired)
 
 (put 'dired-find-alternate-file 'disabled nil)
@@ -192,6 +177,8 @@
 (setq warning-minimum-level :emergency)
 
 (set-language-environment 'utf-8)
+
+(require 'org)
 
 (setq org-startup-folded t)
 (setq org-hidden-keywords '(title))
@@ -281,10 +268,6 @@
 (add-hook 'org-mode-hook 'org-indent-mode)
 
 (setq org-format-latex-options (plist-put org-format-latex-options :scale 2.0))
-
-(org-babel-do-load-languages
- 'org-babel-load-languages
- '((python . t)))
 
 (use-package org-auto-tangle
   :ensure t
@@ -449,15 +432,6 @@
 (use-package dockerfile-mode
   :ensure t)
 
-(use-package nix-mode
-  :ensure t
-  :mode (("\\.nix\\'" . nix-mode)))
-
-(use-package yaml-mode
-  :ensure t
-  :mode (("\\.yml\\'" . yaml-mode)
-         ("\\.yaml\\'" . yaml-mode)))
-
 (use-package auctex
   :ensure t  
   :custom
@@ -470,9 +444,39 @@
 (use-package cdlatex
   :ensure t)
 
-(use-package julia-mode
+(use-package nix-mode
   :ensure t
-  :mode ("\\.jl\\'" . julia-mode))
+  :mode
+  ("\\.nix\\'" . nix-mode)
+  :hook
+  (nix-mode . eglot-ensure))
+
+(use-package nix-ts-mode
+  :ensure t)
+
+(use-package treesit
+  :custom
+  (treesit-language-source-alist
+   '((bash "https://github.com/tree-sitter/tree-sitter-bash")
+     (c "https://github.com/tree-sitter/tree-sitter-c")
+     (cpp "https://github.com/tree-sitter/tree-sitter-cpp")
+     (css "https://github.com/tree-sitter/tree-sitter-css")
+     (csharp "https://github.com/tree-sitter/tree-sitter-c-sharp")
+     (elisp "https://github.com/Wilfred/tree-sitter-elisp")
+     (html "https://github.com/tree-sitter/tree-sitter-html")
+     (js . ("https://github.com/tree-sitter/tree-sitter-javascript" "master" "src"))
+     (json "https://github.com/tree-sitter/tree-sitter-json")
+     (nix "https://github.com/nix-community/tree-sitter-nix")
+     (python "https://github.com/tree-sitter/tree-sitter-python")
+     (rust "https://github.com/tree-sitter/tree-sitter-rust")
+     (toml "https://github.com/tree-sitter/tree-sitter-toml")
+     (tsx . ("https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src"))
+     (typescript . ("https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src"))
+     (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
+  (major-mode-remap-alist
+   '((rust-mode . rust-ts-mode)
+     (nix-mode . nix-ts-mode)))
+  (treesit-font-lock-level 4))
 
 (use-package general
   :ensure t
@@ -486,14 +490,14 @@
   "f S" '((lambda () (interactive) (load-file "~/.emacs.d/init.el")) :which-key "source init.el")
   "f b" '(:which-key "bookmark")
   "f b b" '(bookmark-jump :which-key "jump to bookmark")
-  "f b s" '(bookmark-set :which-key "set bookmark")
+  "f b n" '(bookmark-set :which-key "new bookmark")
   "f b d" '(bookmark-delete :which-key "delete bookmark")
 
   "w" '(:which-key "window")
   "w s" '(split-window-below :which-key "split window horizontally")
   "w v" '(split-window-right :which-key "split window vertically")
   "w c" '(delete-window :which-key "close window")
-  "w w" '(next-window-any-frame :which-key "switch window")
+  "w w" '(other-window :which-key "switch window")
 
   "b" '(:which-key "buffer")
   "b d" '(kill-current-buffer :which-key "kill buffer")
@@ -506,8 +510,7 @@
   "q f" '(delete-frame :which-key "quit emacsclient")
 
   "d" '(:which-key "dired")
-  "d d" '(dired :which-key "open dired")
-  "d j" '(dired-jump :which-key "dired jump")
+  "d d" '(dired-jump :which-key "open dired")
   "d p" '(peep-dired :which-key "peep dired")
 
   "a" '(:which-key "apps")
@@ -522,6 +525,7 @@
   "h f" '(describe-function :which-key "describe function")
   "h k" '(describe-key :which-key "describe key")
   "h m" '(describe-mode :which-key "describe mode")
+  "h M" '(man :which-key "gnu manual")
 
   "o" '(:which-key "org")
   "o p" '(org-latex-preview :which-key "preview latex fragments")
@@ -552,3 +556,20 @@
 
 (nvmap :states '(normal) :keymaps 'override
   "z a" '(org-cycle :which-key "org toggle fold"))
+
+(use-package dashboard
+  :ensure t
+  :custom
+  (dashboard-banner-logo-title "Welcome to Emacs")
+  (dashboard-startup-banner 'logo)
+  (dashboard-icon-type 'nerd-icons)
+  (dashboard-display-icons-p t)
+  (dashboard-set-file-icons t)
+  (dashboard-set-heading-icons t)
+  (dashboard-show-shortcuts t)
+  (dashboard-center-content t)
+  (initial-buffer-choice (lambda () (get-buffer-create dashboard-buffer-name)))
+  :config
+  (dashboard-setup-startup-hook)
+  :init
+  (dashboard-open))

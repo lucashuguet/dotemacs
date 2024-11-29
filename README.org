@@ -13,20 +13,19 @@
   - [[#ligatures][ligatures]]
   - [[#theme][theme]]
   - [[#modeline][modeline]]
-  - [[#dashboard][dashboard]]
   - [[#vertico][vertico]]
   - [[#which-key][which-key]]
 - [[#evil][Evil]]
 - [[#emacs-builtins][Emacs builtins]]
   - [[#custom-file][custom-file]]
   - [[#backups][backups]]
+  - [[#bell][bell]]
   - [[#dired][dired]]
   - [[#recentf][recentf]]
   - [[#warnings][warnings]]
   - [[#utf8][utf8]]
 - [[#org-mode][Org mode]]
   - [[#config][config]]
-  - [[#babel][babel]]
   - [[#extentions][extentions]]
 - [[#code][Code]]
   - [[#minor-modes][minor modes]]
@@ -39,13 +38,13 @@
   - [[#python][python]]
   - [[#web][web]]
   - [[#docker][docker]]
-  - [[#nix][nix]]
-  - [[#yaml][yaml]]
   - [[#latex][latex]]
-  - [[#julia][julia]]
+  - [[#nix][nix]]
+  - [[#treesit][treesit]]
 - [[#keybindings][Keybindings]]
   - [[#general][general]]
   - [[#keys][keys]]
+- [[#dashboard][Dashboard]]
 
 * Pkg Management
 ** melpa
@@ -154,25 +153,6 @@
     :custom
     (doom-modeline-height 30))
 #+end_src
-** dashboard
-#+begin_src emacs-lisp
-  (use-package dashboard
-    :ensure t
-    :custom
-    (dashboard-banner-logo-title "Welcome to Emacs")
-    (dashboard-startup-banner 'logo)
-    (dashboard-icon-type 'nerd-icons)
-    (dashboard-display-icons-p t)
-    (dashboard-set-file-icons t)
-    (dashboard-set-heading-icons t)
-    (dashboard-show-shortcuts t)
-    (dashboard-center-content t)
-    (initial-buffer-choice (lambda () (get-buffer-create dashboard-buffer-name)))
-    :config
-    (dashboard-setup-startup-hook)
-    :init
-    (dashboard-open))
-#+end_src
 ** vertico
 #+begin_src emacs-lisp
   (use-package vertico
@@ -239,6 +219,10 @@ Vim motions emulator in emacs
 #+begin_src emacs-lisp
   (setq backup-directory-alist `((".*" . "~/emacs_backups")))
 #+end_src
+** bell
+#+begin_src emacs-lisp
+  (setq ring-bell-function 'ignore)
+#+end_src
 ** dired
 #+begin_src emacs-lisp
   (require 'dired)
@@ -283,6 +267,8 @@ Vim motions emulator in emacs
 * Org mode
 ** config
 #+begin_src emacs-lisp
+  (require 'org)
+
   (setq org-startup-folded t)
   (setq org-hidden-keywords '(title))
   (setq org-return-follows-link t)
@@ -372,27 +358,21 @@ Vim motions emulator in emacs
 
   (setq org-format-latex-options (plist-put org-format-latex-options :scale 2.0))
 #+end_src
-** babel
-#+begin_src emacs-lisp
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((python . t))) 
-#+end_src
 ** extentions
-**** org-auto-tangle
+*** org-auto-tangle
 #+begin_src emacs-lisp
   (use-package org-auto-tangle
     :ensure t
     :hook (org-mode . org-auto-tangle-mode))
 #+end_src
-**** org-superstar
+*** org-superstar
 #+begin_src emacs-lisp
   (use-package org-superstar
     :ensure t
     :config
     (add-hook 'org-mode-hook 'org-superstar-mode))
 #+end_src
-**** evil-org
+*** evil-org
 #+begin_src emacs-lisp
   (use-package evil-org
     :ensure t
@@ -402,14 +382,14 @@ Vim motions emulator in emacs
     (add-hook 'org-mode-hook 'evil-org-mode)
     (evil-org-agenda-set-keys))
 #+end_src
-**** toc-org
+*** toc-org
 #+begin_src emacs-lisp
   (use-package toc-org
     :ensure t
     :config
     (add-hook 'org-mode-hook 'toc-org-mode))
 #+end_src
-**** org-roam
+*** org-roam
 #+begin_src emacs-lisp
   (use-package org-roam
     :ensure t
@@ -573,19 +553,6 @@ Vim motions emulator in emacs
   (use-package dockerfile-mode
     :ensure t)
 #+end_src
-** nix
-#+begin_src emacs-lisp
-  (use-package nix-mode
-    :ensure t
-    :mode (("\\.nix\\'" . nix-mode)))
-#+end_src
-** yaml
-#+begin_src emacs-lisp
-  (use-package yaml-mode
-    :ensure t
-    :mode (("\\.yml\\'" . yaml-mode)
-           ("\\.yaml\\'" . yaml-mode)))
-#+end_src
 ** latex
 #+begin_src emacs-lisp
   (use-package auctex
@@ -600,11 +567,43 @@ Vim motions emulator in emacs
   (use-package cdlatex
     :ensure t)
 #+end_src
-** julia
+** nix
 #+begin_src emacs-lisp
-  (use-package julia-mode
+  (use-package nix-mode
     :ensure t
-    :mode ("\\.jl\\'" . julia-mode))
+    :mode
+    ("\\.nix\\'" . nix-mode)
+    :hook
+    (nix-mode . eglot-ensure))
+
+  (use-package nix-ts-mode
+    :ensure t)
+#+end_src
+** treesit
+#+begin_src emacs-lisp
+  (use-package treesit
+    :custom
+    (treesit-language-source-alist
+     '((bash "https://github.com/tree-sitter/tree-sitter-bash")
+       (c "https://github.com/tree-sitter/tree-sitter-c")
+       (cpp "https://github.com/tree-sitter/tree-sitter-cpp")
+       (css "https://github.com/tree-sitter/tree-sitter-css")
+       (csharp "https://github.com/tree-sitter/tree-sitter-c-sharp")
+       (elisp "https://github.com/Wilfred/tree-sitter-elisp")
+       (html "https://github.com/tree-sitter/tree-sitter-html")
+       (js . ("https://github.com/tree-sitter/tree-sitter-javascript" "master" "src"))
+       (json "https://github.com/tree-sitter/tree-sitter-json")
+       (nix "https://github.com/nix-community/tree-sitter-nix")
+       (python "https://github.com/tree-sitter/tree-sitter-python")
+       (rust "https://github.com/tree-sitter/tree-sitter-rust")
+       (toml "https://github.com/tree-sitter/tree-sitter-toml")
+       (tsx . ("https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src"))
+       (typescript . ("https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src"))
+       (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
+    (major-mode-remap-alist
+     '((rust-mode . rust-ts-mode)
+       (nix-mode . nix-ts-mode)))
+    (treesit-font-lock-level 4))
 #+end_src
 * Keybindings
 ** general
@@ -623,14 +622,14 @@ Vim motions emulator in emacs
     "f S" '((lambda () (interactive) (load-file "~/.emacs.d/init.el")) :which-key "source init.el")
     "f b" '(:which-key "bookmark")
     "f b b" '(bookmark-jump :which-key "jump to bookmark")
-    "f b s" '(bookmark-set :which-key "set bookmark")
+    "f b n" '(bookmark-set :which-key "new bookmark")
     "f b d" '(bookmark-delete :which-key "delete bookmark")
 
     "w" '(:which-key "window")
     "w s" '(split-window-below :which-key "split window horizontally")
     "w v" '(split-window-right :which-key "split window vertically")
     "w c" '(delete-window :which-key "close window")
-    "w w" '(next-window-any-frame :which-key "switch window")
+    "w w" '(other-window :which-key "switch window")
 
     "b" '(:which-key "buffer")
     "b d" '(kill-current-buffer :which-key "kill buffer")
@@ -643,8 +642,7 @@ Vim motions emulator in emacs
     "q f" '(delete-frame :which-key "quit emacsclient")
 
     "d" '(:which-key "dired")
-    "d d" '(dired :which-key "open dired")
-    "d j" '(dired-jump :which-key "dired jump")
+    "d d" '(dired-jump :which-key "open dired")
     "d p" '(peep-dired :which-key "peep dired")
 
     "a" '(:which-key "apps")
@@ -659,6 +657,7 @@ Vim motions emulator in emacs
     "h f" '(describe-function :which-key "describe function")
     "h k" '(describe-key :which-key "describe key")
     "h m" '(describe-mode :which-key "describe mode")
+    "h M" '(man :which-key "gnu manual")
 
     "o" '(:which-key "org")
     "o p" '(org-latex-preview :which-key "preview latex fragments")
@@ -689,4 +688,24 @@ Vim motions emulator in emacs
 
   (nvmap :states '(normal) :keymaps 'override
     "z a" '(org-cycle :which-key "org toggle fold"))
+#+end_src
+* Dashboard
+This needs to be at the end of the config or it creates problems
+#+begin_src emacs-lisp
+  (use-package dashboard
+    :ensure t
+    :custom
+    (dashboard-banner-logo-title "Welcome to Emacs")
+    (dashboard-startup-banner 'logo)
+    (dashboard-icon-type 'nerd-icons)
+    (dashboard-display-icons-p t)
+    (dashboard-set-file-icons t)
+    (dashboard-set-heading-icons t)
+    (dashboard-show-shortcuts t)
+    (dashboard-center-content t)
+    (initial-buffer-choice (lambda () (get-buffer-create dashboard-buffer-name)))
+    :config
+    (dashboard-setup-startup-hook)
+    :init
+    (dashboard-open))
 #+end_src
