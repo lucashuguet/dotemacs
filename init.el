@@ -212,6 +212,36 @@
                    "(provide 'org-version)\n")))
               :pin nil))
 
+(use-package org-latex-preview
+  :config
+  ;; Increase preview width
+  (plist-put org-latex-preview-appearance-options
+  	   :zoom 1.2)
+
+  ;; Use dvisvgm to generate previews
+  ;; You don't need this, it's the default:
+  (setq org-latex-preview-process-default 'dvisvgm)
+
+  ;; Turn on auto-mode, it's built into Org and much faster/more featured than
+  ;; org-fragtog. (Remember to turn off/uninstall org-fragtog.)
+  (add-hook 'org-mode-hook 'org-latex-preview-auto-mode)
+
+  ;; Block C-n, C-p etc from opening up previews when using auto-mode
+  (setq org-latex-preview-auto-ignored-commands
+        '(next-line previous-line mwheel-scroll
+  		  scroll-up-command scroll-down-command))
+
+  ;; Enable consistent equation numbering
+  (setq org-latex-preview-numbered t)
+
+  ;; Bonus: Turn on live previews.  This shows you a live preview of a LaTeX
+  ;; fragment and updates the preview in real-time as you edit it.
+  ;; To preview only environments, set it to '(block edit-special) instead
+  (setq org-latex-preview-live t)
+
+  ;; More immediate live-previews -- the default delay is 1 second
+  (setq org-latex-preview-live-debounce 0.25))
+
 (require 'org)
 
 (setq org-startup-folded t)
@@ -301,7 +331,7 @@
 (add-hook 'org-mode-hook 'my/style-org)
 (add-hook 'org-mode-hook 'org-indent-mode)
 
-(setq org-format-latex-options (plist-put org-format-latex-options :scale 2.0))
+;; (setq org-format-latex-options (plist-put org-format-latex-options :scale 2.0))
 
 (use-package org-auto-tangle
   :straight t
@@ -563,6 +593,7 @@
 
   "o" '(:which-key "org")
   "o p" '(org-latex-preview :which-key "preview latex fragments")
+  "o c" '(org-latex-preview-clear-cache :which-key "clear latex fragments")
   "o R" '(org-mode-restart :which-key "restart org")
   "o e" '(org-export-dispatch :which-key "org export dispatch")
   "o E" '(org-edit-special :which-key "org edit special")
