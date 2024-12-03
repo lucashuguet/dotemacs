@@ -1,13 +1,20 @@
-(require 'package)
-(add-to-list 'package-archives
-             '("melpa" . "https://melpa.org/packages/") t)
-(package-initialize)
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name
+        "straight/repos/straight.el/bootstrap.el"
+        (or (bound-and-true-p straight-base-dir)
+            user-emacs-directory)))
+      (bootstrap-version 7))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
 
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
-
-(setq use-package-expand-minimally t)
+(straight-use-package 'use-package)
 
 (setq inhibit-startup-message t)
 
@@ -31,14 +38,14 @@
 (global-display-line-numbers-mode t)
 
 (use-package nerd-icons
-  :ensure t
+  :straight t
   :custom
   (nerd-icons-font-family "FantasqueSansM Nerd Font"))
 
 (add-to-list 'default-frame-alist '(font . "FantasqueSansM Nerd Font-16"))
 
 (use-package unicode-fonts
-  :ensure t
+  :straight t
   :init
   (unicode-fonts-setup))
 
@@ -78,31 +85,31 @@
                           `([,ligature-re 0 font-shape-gstring]))))
 
 (use-package doom-themes
-  :ensure t
+  :straight t
   :config
   (load-theme 'doom-ayu-dark t)
   (doom-themes-org-config))
 
 (use-package doom-modeline
-  :ensure t
+  :straight t
   :hook (after-init . doom-modeline-mode)
   :custom
   (doom-modeline-height 30))
 
 (use-package vertico
-  :ensure t
+  :straight t
   :custom
   (vertico-count 15)
   :config
   (vertico-mode))
 
 (use-package which-key
-  :ensure t
+  :straight t
   :config
   (which-key-mode t))
 
 (use-package evil
-  :ensure t
+  :straight t
   :init
   (setq evil-want-integration t)
   (setq evil-want-keybinding nil)
@@ -113,28 +120,28 @@
   (evil-mode t))
 
 (use-package evil-collection
-  :ensure t
+  :straight t
   :after evil
   :config
   (setq evil-collection-mode-list '(dashboard dired ibuffer magit calc))
   (evil-collection-init))
 
 (use-package evil-commentary
-  :ensure t
+  :straight t
   :after evil
   :init (evil-commentary-mode))
 
 (use-package vimish-fold
-  :ensure t
+  :straight t
   :after evil)
 
 (use-package evil-vimish-fold
-  :ensure t
+  :straight t
   :after vimish-fold
   :hook ((prog-mode conf-mode text-mode) . evil-vimish-fold-mode))
 
 (use-package evil-anzu
-  :ensure t
+  :straight t
   :config
   (global-anzu-mode))
 
@@ -153,16 +160,16 @@
   (setq dired-listing-switches "-Dhlv --group-directories-first"))
 
 (use-package nerd-icons-dired
-  :ensure t
+  :straight t
   :hook (dired-mode . nerd-icons-dired-mode))
 
 (use-package diredfl
-  :ensure t
+  :straight t
   :config
   (diredfl-global-mode t))
 
 (use-package peep-dired
-  :ensure t
+  :straight t
   :config
   (with-eval-after-load 'dired
     (define-key dired-mode-map (kbd "M-p") 'peep-dired)
@@ -270,16 +277,16 @@
 (setq org-format-latex-options (plist-put org-format-latex-options :scale 2.0))
 
 (use-package org-auto-tangle
-  :ensure t
+  :straight t
   :hook (org-mode . org-auto-tangle-mode))
 
 (use-package org-superstar
-  :ensure t
+  :straight t
   :config
   (add-hook 'org-mode-hook 'org-superstar-mode))
 
 (use-package evil-org
-  :ensure t
+  :straight t
   :after org
   :config
   (require 'evil-org-agenda)
@@ -287,12 +294,12 @@
   (evil-org-agenda-set-keys))
 
 (use-package toc-org
-  :ensure t
+  :straight t
   :config
   (add-hook 'org-mode-hook 'toc-org-mode))
 
 (use-package org-roam
-  :ensure t
+  :straight t
   :custom
   (org-roam-directory (file-truename "~/Documents/org/roam"))
   :bind (("C-c n l" . org-roam-buffer-toggle)
@@ -317,12 +324,12 @@
 (setq indent-tabs-mode nil)
 
 (use-package eglot
-  :ensure t
+  :straight t
   :custom
   (eldoc-echo-area-use-multiline-p nil))
 
 (use-package corfu
-  :ensure t
+  :straight t
   :custom
   (corfu-cycle t)
   (corfu-auto t)
@@ -350,7 +357,7 @@
   (read-extended-command-predicate #'command-completion-default-include-p))
 
 (use-package cape
-  :ensure t
+  :straight t
   :bind ("C-c p" . cape-prefix-map)
   :init
   (add-hook 'completion-at-point-functions #'cape-dabbrev)
@@ -358,15 +365,15 @@
   (add-hook 'completion-at-point-functions #'cape-elisp-block))
 
 (use-package nerd-icons-corfu
-  :ensure t
+  :straight t
   :init
   (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
 
 (use-package magit
-  :ensure t)
+  :straight t)
 
 (use-package yasnippet
-  :ensure t
+  :straight t
   :config
   (yas-global-mode 1))
 
@@ -383,18 +390,18 @@
 (setq-default abbrev-mode t)
 
 (use-package treemacs
-  :ensure t)
+  :straight t)
 
 (use-package treemacs-evil
-  :ensure t)
+  :straight t)
 
 (use-package treemacs-nerd-icons
-  :ensure t
+  :straight t
   :config
   (treemacs-load-theme "nerd-icons"))
 
 (use-package rust-mode
-  :ensure t
+  :straight t
   :custom
   (rust-format-on-save t)
   (eglot-workspace-configuration
@@ -408,7 +415,7 @@
   :hook (rust-mode . eglot-ensure))
 
 (use-package elpy
-  :ensure t
+  :straight t
   :custom
   (elpy-shell-echo-output nil)
   :mode ("\\.py\\'" . elpy-mode)
@@ -417,23 +424,23 @@
   (elpy-enable))
 
 (use-package web-mode
-  :ensure t
+  :straight t
   :mode
   (("\\.html\\'" . web-mode)
    ("\\.js\\'" . web-mode)
    ("\\.css\\'" . web-mode)))
 
 (use-package emmet-mode
-  :ensure t
+  :straight t
   :hook
   ((web-mode . emmet-mode)
    (tsx-mode . emmet-mode)))
 
 (use-package dockerfile-mode
-  :ensure t)
+  :straight t)
 
 (use-package auctex
-  :ensure t  
+  :straight t  
   :custom
   (TeX-auto-save t)
   (TeX-parse-self t)
@@ -442,17 +449,17 @@
   (LaTeX-mode . prettify-symbols-mode))
 
 (use-package cdlatex
-  :ensure t)
+  :straight t)
 
 (use-package nix-mode
-  :ensure t
+  :straight t
   :mode
   ("\\.nix\\'" . nix-mode)
   :hook
   (nix-mode . eglot-ensure))
 
 (use-package nix-ts-mode
-  :ensure t)
+  :straight t)
 
 (use-package treesit
   :custom
@@ -479,7 +486,7 @@
   (treesit-font-lock-level 4))
 
 (use-package general
-  :ensure t
+  :straight t
   :config
   (general-evil-setup t))
 
@@ -558,7 +565,7 @@
   "z a" '(org-cycle :which-key "org toggle fold"))
 
 (use-package dashboard
-  :ensure t
+  :straight t
   :custom
   (dashboard-banner-logo-title "Welcome to Emacs")
   (dashboard-startup-banner 'logo)

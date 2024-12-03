@@ -4,9 +4,7 @@
 #+auto_tangle: t
 
 * Contents :TOC:
-- [[#pkg-management][Pkg Management]]
-  - [[#melpa][melpa]]
-  - [[#use-package][use-package]]
+- [[#straight][Straight]]
 - [[#appearance][Appearance]]
   - [[#basic-configuration][basic configuration]]
   - [[#fonts][fonts]]
@@ -46,21 +44,25 @@
   - [[#keys][keys]]
 - [[#dashboard][Dashboard]]
 
-* Pkg Management
-** melpa
+* Straight
 #+begin_src emacs-lisp
-  (require 'package)
-  (add-to-list 'package-archives
-               '("melpa" . "https://melpa.org/packages/") t)
-  (package-initialize)
-#+end_src
-** use-package
-#+begin_src emacs-lisp
-  (unless (package-installed-p 'use-package)
-    (package-refresh-contents)
-    (package-install 'use-package))
+  (defvar bootstrap-version)
+  (let ((bootstrap-file
+         (expand-file-name
+          "straight/repos/straight.el/bootstrap.el"
+          (or (bound-and-true-p straight-base-dir)
+              user-emacs-directory)))
+        (bootstrap-version 7))
+    (unless (file-exists-p bootstrap-file)
+      (with-current-buffer
+          (url-retrieve-synchronously
+           "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+           'silent 'inhibit-cookies)
+        (goto-char (point-max))
+        (eval-print-last-sexp)))
+    (load bootstrap-file nil 'nomessage))
 
-  (setq use-package-expand-minimally t)
+  (straight-use-package 'use-package)
 #+end_src
 * Appearance
 ** basic configuration
@@ -89,14 +91,14 @@
 ** fonts
 #+begin_src emacs-lisp
   (use-package nerd-icons
-    :ensure t
+    :straight t
     :custom
     (nerd-icons-font-family "FantasqueSansM Nerd Font"))
 
   (add-to-list 'default-frame-alist '(font . "FantasqueSansM Nerd Font-16"))
 
   (use-package unicode-fonts
-    :ensure t
+    :straight t
     :init
     (unicode-fonts-setup))
 #+end_src
@@ -140,7 +142,7 @@
 ** theme
 #+begin_src emacs-lisp
   (use-package doom-themes
-    :ensure t
+    :straight t
     :config
     (load-theme 'doom-ayu-dark t)
     (doom-themes-org-config))
@@ -148,7 +150,7 @@
 ** modeline
 #+begin_src emacs-lisp
   (use-package doom-modeline
-    :ensure t
+    :straight t
     :hook (after-init . doom-modeline-mode)
     :custom
     (doom-modeline-height 30))
@@ -156,7 +158,7 @@
 ** vertico
 #+begin_src emacs-lisp
   (use-package vertico
-    :ensure t
+    :straight t
     :custom
     (vertico-count 15)
     :config
@@ -165,7 +167,7 @@
 ** which-key
 #+begin_src emacs-lisp
   (use-package which-key
-    :ensure t
+    :straight t
     :config
     (which-key-mode t))
 #+end_src
@@ -173,7 +175,7 @@
 Vim motions emulator in emacs
 #+begin_src emacs-lisp
   (use-package evil
-    :ensure t
+    :straight t
     :init
     (setq evil-want-integration t)
     (setq evil-want-keybinding nil)
@@ -184,28 +186,28 @@ Vim motions emulator in emacs
     (evil-mode t))
 
   (use-package evil-collection
-    :ensure t
+    :straight t
     :after evil
     :config
     (setq evil-collection-mode-list '(dashboard dired ibuffer magit calc))
     (evil-collection-init))
 
   (use-package evil-commentary
-    :ensure t
+    :straight t
     :after evil
     :init (evil-commentary-mode))
 
   (use-package vimish-fold
-    :ensure t
+    :straight t
     :after evil)
 
   (use-package evil-vimish-fold
-    :ensure t
+    :straight t
     :after vimish-fold
     :hook ((prog-mode conf-mode text-mode) . evil-vimish-fold-mode))
 
   (use-package evil-anzu
-    :ensure t
+    :straight t
     :config
     (global-anzu-mode))
 #+end_src
@@ -233,16 +235,16 @@ Vim motions emulator in emacs
     (setq dired-listing-switches "-Dhlv --group-directories-first"))
 
   (use-package nerd-icons-dired
-    :ensure t
+    :straight t
     :hook (dired-mode . nerd-icons-dired-mode))
 
   (use-package diredfl
-    :ensure t
+    :straight t
     :config
     (diredfl-global-mode t))
 
   (use-package peep-dired
-    :ensure t
+    :straight t
     :config
     (with-eval-after-load 'dired
       (define-key dired-mode-map (kbd "M-p") 'peep-dired)
@@ -362,20 +364,20 @@ Vim motions emulator in emacs
 *** org-auto-tangle
 #+begin_src emacs-lisp
   (use-package org-auto-tangle
-    :ensure t
+    :straight t
     :hook (org-mode . org-auto-tangle-mode))
 #+end_src
 *** org-superstar
 #+begin_src emacs-lisp
   (use-package org-superstar
-    :ensure t
+    :straight t
     :config
     (add-hook 'org-mode-hook 'org-superstar-mode))
 #+end_src
 *** evil-org
 #+begin_src emacs-lisp
   (use-package evil-org
-    :ensure t
+    :straight t
     :after org
     :config
     (require 'evil-org-agenda)
@@ -385,14 +387,14 @@ Vim motions emulator in emacs
 *** toc-org
 #+begin_src emacs-lisp
   (use-package toc-org
-    :ensure t
+    :straight t
     :config
     (add-hook 'org-mode-hook 'toc-org-mode))
 #+end_src
 *** org-roam
 #+begin_src emacs-lisp
   (use-package org-roam
-    :ensure t
+    :straight t
     :custom
     (org-roam-directory (file-truename "~/Documents/org/roam"))
     :bind (("C-c n l" . org-roam-buffer-toggle)
@@ -422,14 +424,14 @@ Vim motions emulator in emacs
 ** eglot
 #+begin_src emacs-lisp
   (use-package eglot
-    :ensure t
+    :straight t
     :custom
     (eldoc-echo-area-use-multiline-p nil))
 #+end_src
 ** corfu
 #+begin_src emacs-lisp
   (use-package corfu
-    :ensure t
+    :straight t
     :custom
     (corfu-cycle t)
     (corfu-auto t)
@@ -457,7 +459,7 @@ Vim motions emulator in emacs
     (read-extended-command-predicate #'command-completion-default-include-p))
 
   (use-package cape
-    :ensure t
+    :straight t
     :bind ("C-c p" . cape-prefix-map)
     :init
     (add-hook 'completion-at-point-functions #'cape-dabbrev)
@@ -465,19 +467,19 @@ Vim motions emulator in emacs
     (add-hook 'completion-at-point-functions #'cape-elisp-block))
 
   (use-package nerd-icons-corfu
-    :ensure t
+    :straight t
     :init
     (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
 #+end_src
 ** magit
 #+begin_src emacs-lisp
   (use-package magit
-    :ensure t)
+    :straight t)
 #+end_src
 ** yasnippet
 #+begin_src emacs-lisp
   (use-package yasnippet
-    :ensure t
+    :straight t
     :config
     (yas-global-mode 1))
 
@@ -496,20 +498,20 @@ Vim motions emulator in emacs
 ** treemacs
 #+begin_src emacs-lisp
   (use-package treemacs
-    :ensure t)
+    :straight t)
 
   (use-package treemacs-evil
-    :ensure t)
+    :straight t)
 
   (use-package treemacs-nerd-icons
-    :ensure t
+    :straight t
     :config
     (treemacs-load-theme "nerd-icons"))
 #+end_src
 ** rust
 #+begin_src emacs-lisp
   (use-package rust-mode
-    :ensure t
+    :straight t
     :custom
     (rust-format-on-save t)
     (eglot-workspace-configuration
@@ -525,7 +527,7 @@ Vim motions emulator in emacs
 ** python
 #+begin_src emacs-lisp
   (use-package elpy
-    :ensure t
+    :straight t
     :custom
     (elpy-shell-echo-output nil)
     :mode ("\\.py\\'" . elpy-mode)
@@ -536,14 +538,14 @@ Vim motions emulator in emacs
 ** web
 #+begin_src emacs-lisp
   (use-package web-mode
-    :ensure t
+    :straight t
     :mode
     (("\\.html\\'" . web-mode)
      ("\\.js\\'" . web-mode)
      ("\\.css\\'" . web-mode)))
 
   (use-package emmet-mode
-    :ensure t
+    :straight t
     :hook
     ((web-mode . emmet-mode)
      (tsx-mode . emmet-mode)))
@@ -551,12 +553,12 @@ Vim motions emulator in emacs
 ** docker
 #+begin_src emacs-lisp
   (use-package dockerfile-mode
-    :ensure t)
+    :straight t)
 #+end_src
 ** latex
 #+begin_src emacs-lisp
   (use-package auctex
-    :ensure t  
+    :straight t  
     :custom
     (TeX-auto-save t)
     (TeX-parse-self t)
@@ -565,19 +567,19 @@ Vim motions emulator in emacs
     (LaTeX-mode . prettify-symbols-mode))
 
   (use-package cdlatex
-    :ensure t)
+    :straight t)
 #+end_src
 ** nix
 #+begin_src emacs-lisp
   (use-package nix-mode
-    :ensure t
+    :straight t
     :mode
     ("\\.nix\\'" . nix-mode)
     :hook
     (nix-mode . eglot-ensure))
 
   (use-package nix-ts-mode
-    :ensure t)
+    :straight t)
 #+end_src
 ** treesit
 #+begin_src emacs-lisp
@@ -609,7 +611,7 @@ Vim motions emulator in emacs
 ** general
 #+begin_src emacs-lisp
   (use-package general
-    :ensure t
+    :straight t
     :config
     (general-evil-setup t))
 #+end_src
@@ -693,7 +695,7 @@ Vim motions emulator in emacs
 This needs to be at the end of the config or it creates problems
 #+begin_src emacs-lisp
   (use-package dashboard
-    :ensure t
+    :straight t
     :custom
     (dashboard-banner-logo-title "Welcome to Emacs")
     (dashboard-startup-banner 'logo)
