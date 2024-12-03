@@ -542,6 +542,17 @@
      (nix-mode . nix-ts-mode)))
   (treesit-font-lock-level 4))
 
+(use-package gptel
+  :straight t
+  :config
+  (setq
+   gptel-model 'llama3:8b
+   gptel-backend (gptel-make-ollama "ollama"
+  		 :host "localhost:11434"
+  		 :stream t
+  		 :models '(llama3:8b dolphin-mistral:7b)))
+  (add-hook 'gptel-post-stream-hook 'gptel-auto-scroll))
+
 (use-package general
   :straight t
   :config
@@ -553,6 +564,8 @@
   "a g" '(magit-status-here :which-key "magit")
   "a i" '(ibuffer :which-key "ibuffer")
   "a t" '(treemacs :which-key "open treemacs")
+  "a s" '(gptel-send :which-key "gptel send")
+  "a S" '(gptel :which-key "gptel")
 
   "b" '(:which-key "buffer")
   "b d" '(kill-current-buffer :which-key "kill buffer")
