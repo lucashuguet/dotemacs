@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+# name: latex template
+# --
+\documentclass[]{report}
+\input{../preamble.tex}
+
+\title{$1}
+\begin{document}
+\maketitle
+$0
+\end{document}

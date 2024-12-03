@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: proposition 
+# key: prop
+# condition: 'auto
+# --
+\begin{prop}
+    $0
+\end{prop}

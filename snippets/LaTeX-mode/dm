@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: display equation 
+# key: dm
+# condition: 'auto
+# --
+\[
+$0
+\]

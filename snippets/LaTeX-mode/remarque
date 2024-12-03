@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: remarque
+# key: req
+# condition: 'auto
+# --
+\begin{req}
+    $0
+\end{req}
