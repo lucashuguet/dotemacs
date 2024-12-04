@@ -359,19 +359,20 @@
   :straight t
   :custom
   (org-roam-directory (file-truename "~/Documents/org/roam"))
-  :bind (("C-c n l" . org-roam-buffer-toggle)
-         ("C-c n f" . org-roam-node-find)
-         ("C-c n g" . org-roam-graph)
-         ("C-c n i" . org-roam-node-insert)
-         ("C-c n c" . org-roam-capture)
-         ;; Dailies
-         ("C-c n j" . org-roam-dailies-capture-today))
   :config
   ;; If you're using a vertical completion framework, you might want a more informative completion interface
   (setq org-roam-node-display-template (concat "${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
   (org-roam-db-autosync-mode)
   ;; If using org-roam-protocol
   (require 'org-roam-protocol))
+
+(use-package org-roam-ui
+  :straight t
+  :config
+  (setq org-roam-ui-sync-theme t)
+  (setq org-roam-ui-follow t)
+  (setq org-roam-ui-update-on-save t)
+  (setq org-roam-ui-open-on-start t))
 
 (electric-pair-mode t)
 (electric-indent-mode t)
@@ -564,6 +565,7 @@
   "a g" '(magit-status-here :which-key "magit")
   "a i" '(ibuffer :which-key "ibuffer")
   "a t" '(treemacs :which-key "open treemacs")
+  "a r" '(org-roam-ui-open :which-key "org roam ui")
   "a s" '(gptel-send :which-key "gptel send")
   "a S" '(gptel :which-key "gptel")
 
@@ -619,9 +621,9 @@
   "o p" '(org-latex-preview :which-key "preview latex fragments")
   "o r" '(:which-key "org roam")
   "o R" '(org-mode-restart :which-key "restart org")
-  "o r f" '(org-roam-node-find :which-key "node find")
-  "o r i" '(org-roam-node-insert :which-key "node insert")
-  "o r g" '(org-roam-graph :which-key "nodes graph")
+  "o r f" '(org-roam-node-find :which-key "org roam node find")
+  "o r i" '(org-roam-node-insert :which-key "org roam node insert")
+  "o r s" '(org-roam-db-sync :which-key "org roam sync db")
 
   "q" '(:which-key "quit")
   "q f" '(delete-frame :which-key "quit emacsclient")
