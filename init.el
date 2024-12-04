@@ -278,7 +278,7 @@
 (setq org-hide-leading-stars nil)
 (setq org-indent-mode-turns-on-hiding-stars nil)
 
-(setq org-ellipsis " ▼ ")
+;; (setq org-ellipsis " ▼ ")
 
 (setq org-hide-emphasis-markers t)
 
