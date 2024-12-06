@@ -30,11 +30,6 @@
 (add-to-list 'default-frame-alist
              '(vertical-scroll-bars . nil))
 
-
-;; define a secondary theme used by SPC h t keybinding
-(add-to-list 'custom-enabled-themes 'doom-one-light t)
-
-;; (line-number-mode t)
 (global-display-line-numbers-mode t)
 
 (use-package nerd-icons
@@ -284,7 +279,7 @@
 (setq org-hide-leading-stars nil)
 (setq org-indent-mode-turns-on-hiding-stars nil)
 
-;; (setq org-ellipsis " ▼ ")
+(setq org-ellipsis " ▼ ")
 
 (setq org-hide-emphasis-markers t)
 
@@ -618,8 +613,7 @@
   "h k" '(describe-key :which-key "describe key")
   "h m" '(describe-mode :which-key "describe mode")
   "h M" '(man :which-key "gnu manual")
-  "h t" '((lambda () (interactive) (load-theme (nth 1 custom-enabled-themes) t)) :which-key "cycle last two themes")
-  "h T" '(load-theme :which-key "load theme")
+  "h t" '(load-theme :which-key "load theme")
   "h v" '(describe-variable :which-key "describe variable")
 
   "i" '(:which-key "insert")
