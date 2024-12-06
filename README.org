@@ -26,6 +26,8 @@
   - [[#org-latex-preview][org-latex-preview]]
   - [[#config][config]]
   - [[#extentions][extentions]]
+- [[#utilities][Utilities]]
+  - [[#gptel][gptel]]
 - [[#code][Code]]
   - [[#minor-modes][minor modes]]
   - [[#eglot][eglot]]
@@ -37,10 +39,9 @@
   - [[#python][python]]
   - [[#web][web]]
   - [[#docker][docker]]
-  - [[#latex][latex]]
+  - [[#latex][LaTeX]]
   - [[#nix][nix]]
   - [[#treesit][treesit]]
-  - [[#gptel][gptel]]
 - [[#keybindings][Keybindings]]
   - [[#general][general]]
   - [[#keys][keys]]
@@ -473,6 +474,20 @@ Vim motions emulator in emacs
     (setq org-roam-ui-update-on-save t)
     (setq org-roam-ui-open-on-start t))
 #+end_src
+* Utilities
+** gptel
+#+begin_src emacs-lisp
+  (use-package gptel
+    :straight t
+    :config
+    (setq
+     gptel-model 'llama3:8b
+     gptel-backend (gptel-make-ollama "ollama"
+  		   :host "localhost:11434"
+  		   :stream t
+  		   :models '(llama3:8b dolphin-mistral:7b)))
+    (add-hook 'gptel-post-stream-hook 'gptel-auto-scroll))
+#+end_src
 * Code
 ** minor modes
 #+begin_src emacs-lisp
@@ -617,7 +632,7 @@ Vim motions emulator in emacs
   (use-package dockerfile-mode
     :straight t)
 #+end_src
-** latex
+** LaTeX
 #+begin_src emacs-lisp
   (use-package auctex
     :straight t  
@@ -670,19 +685,6 @@ Vim motions emulator in emacs
      '((rust-mode . rust-ts-mode)
        (nix-mode . nix-ts-mode)))
     (treesit-font-lock-level 4))
-#+end_src
-** gptel
-#+begin_src emacs-lisp
-  (use-package gptel
-    :straight t
-    :config
-    (setq
-     gptel-model 'llama3:8b
-     gptel-backend (gptel-make-ollama "ollama"
-  		   :host "localhost:11434"
-  		   :stream t
-  		   :models '(llama3:8b dolphin-mistral:7b)))
-    (add-hook 'gptel-post-stream-hook 'gptel-auto-scroll))
 #+end_src
 * Keybindings
 ** general
@@ -744,16 +746,16 @@ Vim motions emulator in emacs
     "i n" '(yas-new-snippet :which-key "new snippet")
     "i s" '(yas-insert-snippet :which-key "insert snippet")
 
-    "l" '(:which-key "latex")
-    "l c" '((lambda () (interactive) (TeX-command "LaTeXMkCompile" 'TeX-master-file -1)) :which-key "latex compile")
-    "l C" '((lambda () (interactive) (TeX-command "LaTeXMkClean" 'TeX-master-file -1)) :which-key "latex clean")
-    "l e" '(cdlatex-environment :which-key "latex environment")
+    "l" '(:which-key "LaTeX")
+    "l c" '((lambda () (interactive) (TeX-command "LaTeXMkCompile" 'TeX-master-file -1)) :which-key "LaTeX compile")
+    "l C" '((lambda () (interactive) (TeX-command "LaTeXMkClean" 'TeX-master-file -1)) :which-key "LaTeX clean")
+    "l e" '(cdlatex-environment :which-key "LaTeX environment")
 
     "o" '(:which-key "org")
-    "o c" '(org-latex-preview-clear-cache :which-key "clear latex fragments")
+    "o c" '(org-latex-preview-clear-cache :which-key "clear LaTeX fragments")
     "o e" '(org-export-dispatch :which-key "org export dispatch")
     "o E" '(org-edit-special :which-key "org edit special")
-    "o p" '(org-latex-preview :which-key "preview latex fragments")
+    "o p" '(org-latex-preview :which-key "preview LaTeX fragments")
     "o r" '(:which-key "org roam")
     "o R" '(org-mode-restart :which-key "restart org")
     "o r f" '(org-roam-node-find :which-key "org roam node find")
