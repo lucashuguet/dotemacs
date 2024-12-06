@@ -399,6 +399,9 @@
   	  (string-match-p "^magit" (buffer-name)))
     (previous-buffer)))
 
+(use-package magit
+  :straight t)
+
 (use-package gptel
   :straight t
   :config
@@ -409,6 +412,14 @@
   		 :stream t
   		 :models '(llama3:8b dolphin-mistral:7b)))
   (add-hook 'gptel-post-stream-hook 'gptel-auto-scroll))
+
+(use-package embark
+  :straight t
+  :bind
+  (("M-," . embark-act)
+   ("C-h B" . embark-bindings))
+  :init
+  (setq prefix-help-command #'embark-prefix-help-command))
 
 (electric-pair-mode t)
 (electric-indent-mode t)
@@ -462,9 +473,6 @@
   :straight t
   :init
   (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
-
-(use-package magit
-  :straight t)
 
 (use-package yasnippet
   :straight t

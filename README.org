@@ -31,12 +31,13 @@
   - [[#load-theme][load-theme]]
   - [[#next-buffer][next-buffer]]
 - [[#utilities][Utilities]]
+  - [[#magit][magit]]
   - [[#gptel][gptel]]
+  - [[#embark][embark]]
 - [[#code][Code]]
   - [[#minor-modes][minor modes]]
   - [[#eglot][eglot]]
   - [[#corfu][corfu]]
-  - [[#magit][magit]]
   - [[#yasnippet][yasnippet]]
   - [[#treemacs][treemacs]]
   - [[#rust][rust]]
@@ -511,6 +512,11 @@ Vim motions emulator in emacs
       (previous-buffer)))
 #+end_src
 * Utilities
+** magit
+#+begin_src emacs-lisp
+  (use-package magit
+    :straight t)
+#+end_src
 ** gptel
 #+begin_src emacs-lisp
   (use-package gptel
@@ -523,6 +529,16 @@ Vim motions emulator in emacs
   		   :stream t
   		   :models '(llama3:8b dolphin-mistral:7b)))
     (add-hook 'gptel-post-stream-hook 'gptel-auto-scroll))
+#+end_src
+** embark
+#+begin_src emacs-lisp
+  (use-package embark
+    :straight t
+    :bind
+    (("M-," . embark-act)
+     ("C-h B" . embark-bindings))
+    :init
+    (setq prefix-help-command #'embark-prefix-help-command))
 #+end_src
 * Code
 ** minor modes
@@ -583,11 +599,6 @@ Vim motions emulator in emacs
     :straight t
     :init
     (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
-#+end_src
-** magit
-#+begin_src emacs-lisp
-  (use-package magit
-    :straight t)
 #+end_src
 ** yasnippet
 #+begin_src emacs-lisp
