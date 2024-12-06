@@ -777,6 +777,7 @@ Vim motions emulator in emacs
     "o c" '(org-latex-preview-clear-cache :which-key "clear LaTeX fragments")
     "o e" '(org-export-dispatch :which-key "org export dispatch")
     "o E" '(org-edit-special :which-key "org edit special")
+    "o i" '(org-link-preview :which-key "toggle inline images")
     "o p" '(org-latex-preview :which-key "preview LaTeX fragments")
     "o r" '(:which-key "org roam")
     "o R" '(org-mode-restart :which-key "restart org")
