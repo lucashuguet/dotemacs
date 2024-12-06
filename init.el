@@ -374,6 +374,17 @@
   (setq org-roam-ui-update-on-save t)
   (setq org-roam-ui-open-on-start t))
 
+(defun disable-all-themes ()
+  "disable all active themes."
+  (dolist (i custom-enabled-themes)
+    (disable-theme i)))
+
+(defadvice load-theme (before disable-themes-first activate)
+  (disable-all-themes))
+
+(defadvice load-theme (after style-org activate)
+  (my/style-org))
+
 (use-package gptel
   :straight t
   :config

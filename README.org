@@ -26,6 +26,8 @@
   - [[#org-latex-preview][org-latex-preview]]
   - [[#config][config]]
   - [[#extentions][extentions]]
+- [[#advices][Advices]]
+  - [[#load-theme][load-theme]]
 - [[#utilities][Utilities]]
   - [[#gptel][gptel]]
 - [[#code][Code]]
@@ -473,6 +475,20 @@ Vim motions emulator in emacs
     (setq org-roam-ui-follow t)
     (setq org-roam-ui-update-on-save t)
     (setq org-roam-ui-open-on-start t))
+#+end_src
+* Advices
+** load-theme
+#+begin_src emacs-lisp
+  (defun disable-all-themes ()
+    "disable all active themes."
+    (dolist (i custom-enabled-themes)
+      (disable-theme i)))
+
+  (defadvice load-theme (before disable-themes-first activate)
+    (disable-all-themes))
+
+  (defadvice load-theme (after style-org activate)
+    (my/style-org))
 #+end_src
 * Utilities
 ** gptel
