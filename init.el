@@ -503,6 +503,8 @@
   (TeX-auto-save t)
   (TeX-parse-self t)
   (TeX-PDF-mode t)
+  :mode
+  ("\\.tex\\'" . LaTeX-mode)
   :hook
   (LaTeX-mode . prettify-symbols-mode))
 
