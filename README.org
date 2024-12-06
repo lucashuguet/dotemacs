@@ -29,6 +29,7 @@
   - [[#extentions][extentions]]
 - [[#advices][Advices]]
   - [[#load-theme][load-theme]]
+  - [[#next-buffer][next-buffer]]
 - [[#utilities][Utilities]]
   - [[#gptel][gptel]]
 - [[#code][Code]]
@@ -496,6 +497,18 @@ Vim motions emulator in emacs
 
   (defadvice load-theme (after style-org activate)
     (my/style-org))
+#+end_src
+** next-buffer
+#+begin_src emacs-lisp
+  (defadvice next-buffer (after avoid-anoying-buffers activate)
+    (when (or (string-match-p "^\*" (buffer-name))
+  	    (string-match-p "^magit" (buffer-name)))
+      (next-buffer)))
+
+  (defadvice previous-buffer (after avoid-anoying-buffers activate)
+    (when (or (string-match-p "^\*" (buffer-name))
+  	    (string-match-p "^magit" (buffer-name)))
+      (previous-buffer)))
 #+end_src
 * Utilities
 ** gptel

@@ -389,6 +389,16 @@
 (defadvice load-theme (after style-org activate)
   (my/style-org))
 
+(defadvice next-buffer (after avoid-anoying-buffers activate)
+  (when (or (string-match-p "^\*" (buffer-name))
+  	  (string-match-p "^magit" (buffer-name)))
+    (next-buffer)))
+
+(defadvice previous-buffer (after avoid-anoying-buffers activate)
+  (when (or (string-match-p "^\*" (buffer-name))
+  	  (string-match-p "^magit" (buffer-name)))
+    (previous-buffer)))
+
 (use-package gptel
   :straight t
   :config
