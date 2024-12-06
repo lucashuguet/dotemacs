@@ -427,6 +427,9 @@ Vim motions emulator in emacs
   (add-hook 'org-mode-hook 'org-indent-mode)
 
   ;; (setq org-format-latex-options (plist-put org-format-latex-options :scale 2.0))
+
+  ;; prevent org capture from saving bookmarks
+  (setq org-bookmark-names-plist nil)
 #+end_src
 ** extentions
 *** org-auto-tangle

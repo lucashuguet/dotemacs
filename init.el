@@ -334,6 +334,9 @@
 
 ;; (setq org-format-latex-options (plist-put org-format-latex-options :scale 2.0))
 
+;; prevent org capture from saving bookmarks
+(setq org-bookmark-names-plist nil)
+
 (use-package org-auto-tangle
   :straight t
   :hook (org-mode . org-auto-tangle-mode))
