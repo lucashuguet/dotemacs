@@ -82,7 +82,7 @@
 (use-package doom-themes
   :straight t
   :config
-  (load-theme 'doom-ayu-dark t)
+  (load-theme 'doom-material-dark t)
   (doom-themes-org-config))
 
 (use-package doom-modeline
