@@ -12,6 +12,7 @@
   - [[#theme][theme]]
   - [[#modeline][modeline]]
   - [[#vertico][vertico]]
+  - [[#orderless][orderless]]
   - [[#which-key][which-key]]
 - [[#evil][Evil]]
 - [[#emacs-builtins][Emacs builtins]]
@@ -168,6 +169,14 @@
     (vertico-count 15)
     :config
     (vertico-mode))
+#+end_src
+** orderless
+#+begin_src emacs-lisp
+  (use-package orderless
+    :straight t
+    :custom
+    (completion-styles '(orderless basic))
+    (completion-category-overrides '((file (styles basic partial-completion)))))
 #+end_src
 ** which-key
 #+begin_src emacs-lisp

@@ -103,6 +103,12 @@
   :config
   (vertico-mode))
 
+(use-package orderless
+  :straight t
+  :custom
+  (completion-styles '(orderless basic))
+  (completion-category-overrides '((file (styles basic partial-completion)))))
+
 (use-package which-key
   :straight t
   :config
