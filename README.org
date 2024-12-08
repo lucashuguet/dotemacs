@@ -145,6 +145,12 @@
                             `([,ligature-re 0 font-shape-gstring]))))
 #+end_src
 ** theme
+My favorites themes are
+ - =doom-laserwave=
+ - =doom-ir-black=
+ - =doom-badger=
+ - =doom-1337=
+ - =doom-material-dark=
 #+begin_src emacs-lisp
   (use-package doom-themes
     :straight t
