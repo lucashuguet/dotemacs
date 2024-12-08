@@ -35,6 +35,7 @@
   - [[#gptel][gptel]]
   - [[#embark][embark]]
   - [[#affe][affe]]
+  - [[#avy][avy]]
 - [[#code][Code]]
   - [[#minor-modes][minor modes]]
   - [[#eglot][eglot]]
@@ -535,7 +536,7 @@ Vim motions emulator in emacs
 #+begin_src emacs-lisp
   (use-package embark
     :straight t
-    :bind
+    :bind*
     (("C-;" . embark-act)
      ("C-h B" . embark-bindings))
     :init
@@ -544,6 +545,13 @@ Vim motions emulator in emacs
 ** affe
 #+begin_src emacs-lisp
   (use-package affe
+    :straight t)
+#+end_src
+** avy
+#+begin_src emacs-lisp
+  (use-package avy
+    :bind*
+    (("C-j" . avy-goto-char))
     :straight t)
 #+end_src
 * Code

@@ -415,13 +415,18 @@
 
 (use-package embark
   :straight t
-  :bind
+  :bind*
   (("C-;" . embark-act)
    ("C-h B" . embark-bindings))
   :init
   (setq prefix-help-command #'embark-prefix-help-command))
 
 (use-package affe
+  :straight t)
+
+(use-package avy
+  :bind*
+  (("C-j" . avy-goto-char))
   :straight t)
 
 (electric-pair-mode t)
