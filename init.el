@@ -416,10 +416,13 @@
 (use-package embark
   :straight t
   :bind
-  (("M-," . embark-act)
+  (("C-;" . embark-act)
    ("C-h B" . embark-bindings))
   :init
   (setq prefix-help-command #'embark-prefix-help-command))
+
+(use-package affe
+  :straight t)
 
 (electric-pair-mode t)
 (electric-indent-mode t)
@@ -597,6 +600,8 @@
 (nvmap :states '(normal visual motion emacs) :keymaps 'override :prefix "SPC"
   "a" '(:which-key "apps")
   "a d" '(dashboard-open :which-key "dashboard")
+  "a f" '(affe-find :which-key "affe find")
+  "a F" '(affe-grep :which-key "affe grep")
   "a g" '(magit-status-here :which-key "magit")
   "a i" '(ibuffer :which-key "ibuffer")
   "a t" '(treemacs :which-key "open treemacs")

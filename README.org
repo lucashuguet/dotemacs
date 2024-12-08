@@ -34,6 +34,7 @@
   - [[#magit][magit]]
   - [[#gptel][gptel]]
   - [[#embark][embark]]
+  - [[#affe][affe]]
 - [[#code][Code]]
   - [[#minor-modes][minor modes]]
   - [[#eglot][eglot]]
@@ -535,10 +536,15 @@ Vim motions emulator in emacs
   (use-package embark
     :straight t
     :bind
-    (("M-," . embark-act)
+    (("C-;" . embark-act)
      ("C-h B" . embark-bindings))
     :init
     (setq prefix-help-command #'embark-prefix-help-command))
+#+end_src
+** affe
+#+begin_src emacs-lisp
+  (use-package affe
+    :straight t)
 #+end_src
 * Code
 ** minor modes
@@ -746,6 +752,8 @@ Vim motions emulator in emacs
   (nvmap :states '(normal visual motion emacs) :keymaps 'override :prefix "SPC"
     "a" '(:which-key "apps")
     "a d" '(dashboard-open :which-key "dashboard")
+    "a f" '(affe-find :which-key "affe find")
+    "a F" '(affe-grep :which-key "affe grep")
     "a g" '(magit-status-here :which-key "magit")
     "a i" '(ibuffer :which-key "ibuffer")
     "a t" '(treemacs :which-key "open treemacs")
