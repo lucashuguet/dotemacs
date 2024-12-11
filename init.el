@@ -497,7 +497,7 @@
 (setq abbrev-file-name "~/.emacs.d/abbrev_defs")
 
 (setq save-abbrevs 'silently)
-(setq-default abbrev-mode t)
+;; (setq-default abbrev-mode t)
 
 (use-package treemacs
   :straight t)
@@ -510,10 +510,33 @@
   :config
   (treemacs-load-theme "nerd-icons"))
 
+(use-package treesit
+  :custom
+  (treesit-language-source-alist
+   '((bash "https://github.com/tree-sitter/tree-sitter-bash")
+     (c "https://github.com/tree-sitter/tree-sitter-c")
+     (cpp "https://github.com/tree-sitter/tree-sitter-cpp")
+     (css "https://github.com/tree-sitter/tree-sitter-css")
+     (elisp "https://github.com/Wilfred/tree-sitter-elisp")
+     (html "https://github.com/tree-sitter/tree-sitter-html")
+     (js . ("https://github.com/tree-sitter/tree-sitter-javascript" "master" "src"))
+     (json "https://github.com/tree-sitter/tree-sitter-json")
+     (nix "https://github.com/nix-community/tree-sitter-nix")
+     (python "https://github.com/tree-sitter/tree-sitter-python")
+     (rust "https://github.com/tree-sitter/tree-sitter-rust")
+     (toml "https://github.com/tree-sitter/tree-sitter-toml")
+     (tsx . ("https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src"))
+     (typescript . ("https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src"))
+     (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
+  (treesit-font-lock-level 4))
+
 (use-package rust-mode
   :straight t
+  :init
+  (setq rust-mode-treesitter-derive t)
+  :config
+  (setq rust-format-on-save t)
   :custom
-  (rust-format-on-save t)
   (eglot-workspace-configuration
    '(:rust-analyzer
      ( :procMacro ( :attributes (:enable t)
@@ -522,16 +545,20 @@
        :diagnostics (:disabled ["unresolved-proc-macro"
                                 "unresolved-macro-call"]))))
   :mode ("\\.rs\\'" . rust-mode)
-  :hook (rust-mode . eglot-ensure))
+  :hook ((rust-mode . eglot-ensure)
+       (rust-ts-mode . eglot-ensure)))
 
-(use-package elpy
+(use-package nix-mode
+  :straight t)
+
+(use-package nix-ts-mode
   :straight t
-  :custom
-  (elpy-shell-echo-output nil)
-  :mode ("\\.py\\'" . elpy-mode)
-  :hook (elpy-mode . eglot-ensure)
-  :init
-  (elpy-enable))
+  :mode
+  ("\\.nix\\'" . nix-ts-mode)
+  :hook
+  (nix-ts-mode . eglot-ensure))
+
+(add-to-list 'eglot-server-programs '(nix-ts-mode . ("nil")))
 
 (use-package web-mode
   :straight t
@@ -545,9 +572,6 @@
   :hook
   ((web-mode . emmet-mode)
    (tsx-mode . emmet-mode)))
-
-(use-package dockerfile-mode
-  :straight t)
 
 (use-package auctex
   :straight t  
@@ -563,39 +587,15 @@
 (use-package cdlatex
   :straight t)
 
-(use-package nix-mode
-  :straight t
-  :mode
-  ("\\.nix\\'" . nix-mode)
-  :hook
-  (nix-mode . eglot-ensure))
+(add-to-list 'auto-mode-alist '("\\.py\\'" . python-ts-mode))
+(add-hook 'python-ts-mode 'eglot-ensure)
 
-(use-package nix-ts-mode
-  :straight t)
+(add-to-list 'auto-mode-alist '("\\.yaml\\'" . yaml-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-ts-mode))
 
-(use-package treesit
-  :custom
-  (treesit-language-source-alist
-   '((bash "https://github.com/tree-sitter/tree-sitter-bash")
-     (c "https://github.com/tree-sitter/tree-sitter-c")
-     (cpp "https://github.com/tree-sitter/tree-sitter-cpp")
-     (css "https://github.com/tree-sitter/tree-sitter-css")
-     (csharp "https://github.com/tree-sitter/tree-sitter-c-sharp")
-     (elisp "https://github.com/Wilfred/tree-sitter-elisp")
-     (html "https://github.com/tree-sitter/tree-sitter-html")
-     (js . ("https://github.com/tree-sitter/tree-sitter-javascript" "master" "src"))
-     (json "https://github.com/tree-sitter/tree-sitter-json")
-     (nix "https://github.com/nix-community/tree-sitter-nix")
-     (python "https://github.com/tree-sitter/tree-sitter-python")
-     (rust "https://github.com/tree-sitter/tree-sitter-rust")
-     (toml "https://github.com/tree-sitter/tree-sitter-toml")
-     (tsx . ("https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src"))
-     (typescript . ("https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src"))
-     (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
-  (major-mode-remap-alist
-   '((rust-mode . rust-ts-mode)
-     (nix-mode . nix-ts-mode)))
-  (treesit-font-lock-level 4))
+(add-to-list 'auto-mode-alist '("Dockerfile" . dockerfile-ts-mode))
+
+(add-to-list 'auto-mode-alist '("\\.toml\\'" . toml-ts-mode))
 
 (use-package general
   :straight t
