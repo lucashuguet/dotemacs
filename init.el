@@ -147,7 +147,7 @@
   (global-anzu-mode))
 
 (setq custom-file "~/.emacs.d/custom.el")
-(load custom-file)
+;; (load custom-file)
 
 (setq backup-directory-alist `((".*" . "~/emacs_backups")))
 
@@ -579,6 +579,13 @@
   (TeX-auto-save t)
   (TeX-parse-self t)
   (TeX-PDF-mode t)
+  :config
+  (add-to-list 'TeX-command-list '("LaTeXMkClean" "latexmk -c %(latexmk-out) %(file-line-error) %(output-dir) %`%(extraopts) %S%(mode)%' %t" TeX-run-TeX nil
+  				 (LaTeX-mode)
+  				 :help "latexmk clean"))
+  (add-to-list 'TeX-command-list '("LaTeXMkCompile" "latexmk -pdf %(latexmk-out) %(file-line-error) %(output-dir) %`%(extraopts) %S%(mode)%' %t" TeX-run-TeX nil
+  				 (LaTeX-mode)
+  				 :help "latexmk compile"))
   :mode
   ("\\.tex\\'" . LaTeX-mode)
   :hook
