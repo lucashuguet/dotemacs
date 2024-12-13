@@ -354,11 +354,6 @@
   (add-hook 'org-mode-hook 'evil-org-mode)
   (evil-org-agenda-set-keys))
 
-(use-package toc-org
-  :straight t
-  :config
-  (add-hook 'org-mode-hook 'toc-org-mode))
-
 (use-package org-roam
   :straight t
   :custom

@@ -3,47 +3,6 @@
 #+property: header-args :tangle init.el
 #+auto_tangle: t
 
-* Contents :TOC:
-- [[#straight][Straight]]
-- [[#appearance][Appearance]]
-  - [[#basic-configuration][basic configuration]]
-  - [[#fonts][fonts]]
-  - [[#ligatures][ligatures]]
-  - [[#theme][theme]]
-  - [[#modeline][modeline]]
-  - [[#vertico][vertico]]
-  - [[#orderless][orderless]]
-  - [[#which-key][which-key]]
-- [[#evil][Evil]]
-- [[#emacs-builtins][Emacs builtins]]
-  - [[#custom-file][custom-file]]
-  - [[#backups][backups]]
-  - [[#bell][bell]]
-  - [[#dired][dired]]
-  - [[#recentf][recentf]]
-  - [[#warnings][warnings]]
-  - [[#utf8][utf8]]
-- [[#org-mode][Org mode]]
-  - [[#org-latex-preview][org-latex-preview]]
-  - [[#config][config]]
-  - [[#extentions][extentions]]
-- [[#advices][Advices]]
-  - [[#load-theme][load-theme]]
-  - [[#next-buffer][next-buffer]]
-- [[#utilities][Utilities]]
-  - [[#magit][magit]]
-  - [[#gptel][gptel]]
-  - [[#embark][embark]]
-  - [[#affe][affe]]
-  - [[#avy][avy]]
-- [[#code][Code]]
-  - [[#tools][tools]]
-  - [[#languages][languages]]
-- [[#keybindings][Keybindings]]
-  - [[#general][general]]
-  - [[#keys][keys]]
-- [[#dashboard][Dashboard]]
-
 * Straight
 #+begin_src emacs-lisp
   (defvar bootstrap-version)
@@ -454,13 +413,6 @@ Vim motions emulator in emacs
     (require 'evil-org-agenda)
     (add-hook 'org-mode-hook 'evil-org-mode)
     (evil-org-agenda-set-keys))
-#+end_src
-*** toc-org
-#+begin_src emacs-lisp
-  (use-package toc-org
-    :straight t
-    :config
-    (add-hook 'org-mode-hook 'toc-org-mode))
 #+end_src
 *** org-roam
 #+begin_src emacs-lisp
