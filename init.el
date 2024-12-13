@@ -549,16 +549,19 @@
        (rust-ts-mode . eglot-ensure)))
 
 (use-package nix-mode
-  :straight t)
-
-(use-package nix-ts-mode
   :straight t
   :mode
-  ("\\.nix\\'" . nix-ts-mode)
-  :hook
-  (nix-ts-mode . eglot-ensure))
+  ("\\.nix\\'" . nix-mode))
+
+(use-package nix-ts-mode
+  :straight t)
 
 (add-to-list 'eglot-server-programs '(nix-ts-mode . ("nil")))
+(add-to-list 'major-mode-remap-alist '(nix-mode . nix-ts-mode))
+
+(use-package eglot
+  :after nix-ts-mode
+  :hook (nix-ts-mode . eglot-ensure))
 
 (use-package web-mode
   :straight t
@@ -594,8 +597,9 @@
 (use-package cdlatex
   :straight t)
 
-(add-to-list 'auto-mode-alist '("\\.py\\'" . python-ts-mode))
-(add-hook 'python-ts-mode 'eglot-ensure)
+(add-to-list 'major-mode-remap-alist '(python-mode . python-ts-mode))
+(use-package eglot
+  :hook (python-ts-mode . eglot-ensure))
 
 (add-to-list 'auto-mode-alist '("\\.yaml\\'" . yaml-ts-mode))
 (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-ts-mode))
