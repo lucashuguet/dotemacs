@@ -551,7 +551,7 @@
 (use-package nix-ts-mode
   :straight t)
 
-(add-to-list 'eglot-server-programs '(nix-ts-mode . ("nil")))
+(add-to-list 'eglot-server-programs '(nix-ts-mode . ("nixd")))
 (add-to-list 'major-mode-remap-alist '(nix-mode . nix-ts-mode))
 
 (use-package eglot
