@@ -499,7 +499,7 @@ Vim motions emulator in emacs
 #+begin_src emacs-lisp
   (use-package avy
     :bind*
-    (("C-j" . avy-goto-char))
+    (("C-j" . avy-goto-char-timer))
     :straight t)
 #+end_src
 * Code

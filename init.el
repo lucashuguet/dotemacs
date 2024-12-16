@@ -421,7 +421,7 @@
 
 (use-package avy
   :bind*
-  (("C-j" . avy-goto-char))
+  (("C-j" . avy-goto-char-timer))
   :straight t)
 
 (electric-pair-mode t)
