@@ -712,6 +712,18 @@ Vim motions emulator in emacs
 #+begin_src emacs-lisp
   (add-to-list 'auto-mode-alist '("\\.toml\\'" . toml-ts-mode))
 #+end_src
+*** c
+#+begin_src emacs-lisp
+  (add-to-list 'major-mode-remap-alist '(c-mode . c-ts-mode))
+  (use-package eglot
+    :hook (c-ts-mode . eglot-ensure))
+#+end_src
+*** cpp
+#+begin_src emacs-lisp
+  (add-to-list 'major-mode-remap-alist '(c++-mode . c++-ts-mode))
+  (use-package eglot
+    :hook (c++-ts-mode . eglot-ensure))
+#+end_src
 * Keybindings
 ** general
 #+begin_src emacs-lisp

@@ -603,6 +603,14 @@
 
 (add-to-list 'auto-mode-alist '("\\.toml\\'" . toml-ts-mode))
 
+(add-to-list 'major-mode-remap-alist '(c-mode . c-ts-mode))
+(use-package eglot
+  :hook (c-ts-mode . eglot-ensure))
+
+(add-to-list 'major-mode-remap-alist '(c++-mode . c++-ts-mode))
+(use-package eglot
+  :hook (c++-ts-mode . eglot-ensure))
+
 (use-package general
   :straight t
   :config
